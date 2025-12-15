@@ -1,0 +1,123 @@
+{
+  "meta": {
+    "version": "8A-1.0",
+    "scope": "WS-1 Acceptance Criteria (R2/R3 only)",
+    "last_updated": "2025-12-15"
+  },
+  "artifacts": {
+    "Quality Plan": {
+      "description": "Defines roles, responsibilities, scope, and quality objectives",
+      "risk_levels": {
+        "R2": {
+          "required_sections": [
+            "Purpose",
+            "Scope",
+            "Roles and Responsibilities",
+            "Quality Objectives"
+          ],
+          "rules": {
+            "placeholders_not_allowed": true,
+            "min_sections_present": 4
+          }
+        },
+        "R3": {
+          "required_sections": [
+            "Purpose",
+            "Scope",
+            "Roles and Responsibilities",
+            "Quality Objectives",
+            "Escalation and Governance"
+          ],
+          "rules": {
+            "placeholders_not_allowed": true,
+            "min_sections_present": 5
+          }
+        }
+      }
+    },
+
+    "Risk Register": {
+      "description": "Identifies, assesses, and mitigates risks",
+      "risk_levels": {
+        "R2": {
+          "rules": {
+            "min_risks": 3,
+            "required_fields": [
+              "id",
+              "description",
+              "likelihood",
+              "impact",
+              "mitigation",
+              "owner"
+            ],
+            "placeholders_not_allowed": true
+          }
+        },
+        "R3": {
+          "rules": {
+            "min_risks": 5,
+            "required_fields": [
+              "id",
+              "description",
+              "likelihood",
+              "impact",
+              "mitigation",
+              "owner"
+            ],
+            "placeholders_not_allowed": true
+          }
+        }
+      }
+    },
+
+    "Verification Plan": {
+      "description": "Defines how requirements and risks are verified",
+      "risk_levels": {
+        "R2": {
+          "required_sections": [
+            "Verification Strategy",
+            "Test Approach"
+          ],
+          "rules": {
+            "placeholders_not_allowed": true
+          }
+        },
+        "R3": {
+          "required_sections": [
+            "Verification Strategy",
+            "Test Approach",
+            "Traceability to Risks"
+          ],
+          "rules": {
+            "placeholders_not_allowed": true
+          }
+        }
+      }
+    },
+
+    "Control Plan": {
+      "description": "Defines controls to manage identified risks",
+      "risk_levels": {
+        "R2": {
+          "required_sections": [
+            "Control Objectives",
+            "Operational Controls"
+          ],
+          "rules": {
+            "placeholders_not_allowed": true
+          }
+        },
+        "R3": {
+          "required_sections": [
+            "Control Objectives",
+            "Operational Controls",
+            "Monitoring and Review"
+          ],
+          "rules": {
+            "placeholders_not_allowed": true
+          }
+        }
+      }
+    }
+  }
+}
