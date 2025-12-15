@@ -1,0 +1,30 @@
+{
+  "review_id": "ER-20251215-d0a2cc94",
+  "intake_id": "metric-test-1",
+  "project_name": "Test Project 1",
+  "reviewer_name": "Test Reviewer",
+  "reviewer_qualifications": "Expert",
+  "decision_date": "2025-12-15T09:43:37.174533",
+  "review_type": "recommended",
+  "decision": "approved",
+  "original_classification": "R0",
+  "final_classification": "R0",
+  "approval": {
+    "review_id": "ER-20251215-d0a2cc94",
+    "reviewer_name": "Test Reviewer",
+    "reviewer_qualifications": "Expert",
+    "decision_date": "2025-12-15T09:43:37.174529",
+    "expert_comments": null,
+    "classification_approved": "R0"
+  },
+  "override": null,
+  "info_request": null,
+  "review_triggers": [
+    {
+      "trigger_id": "TEST",
+      "description": "Test",
+      "severity": "recommended"
+    }
+  ],
+  "outcome": "Approved"
+}

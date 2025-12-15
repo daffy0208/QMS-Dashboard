@@ -1,0 +1,30 @@
+{
+  "review_id": "ER-20251215-b1392068",
+  "intake_id": "storage-test",
+  "project_name": "Storage Test Project",
+  "reviewer_name": "Dr. Jane Smith",
+  "reviewer_qualifications": "Senior QA Engineer, 15 years experience",
+  "decision_date": "2025-12-15T10:44:00.366103",
+  "review_type": "recommended",
+  "decision": "approved",
+  "original_classification": "R0",
+  "final_classification": "R0",
+  "approval": {
+    "review_id": "ER-20251215-b1392068",
+    "reviewer_name": "Dr. Jane Smith",
+    "reviewer_qualifications": "Senior QA Engineer, 15 years experience",
+    "decision_date": "2025-12-15T10:44:00.366100",
+    "expert_comments": "Classification is appropriate for this internal tool. R0 rigor is sufficient.",
+    "classification_approved": "R0"
+  },
+  "override": null,
+  "info_request": null,
+  "review_triggers": [
+    {
+      "trigger_id": "TEST",
+      "description": "Test trigger",
+      "severity": "recommended"
+    }
+  ],
+  "outcome": "Classification approved, user notified"
+}

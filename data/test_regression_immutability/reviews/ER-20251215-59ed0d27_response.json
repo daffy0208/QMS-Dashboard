@@ -1,0 +1,30 @@
+{
+  "review_id": "ER-20251215-59ed0d27",
+  "intake_id": "immutability-test",
+  "project_name": "Immutability Regression Test",
+  "reviewer_name": "Regression Tester",
+  "reviewer_qualifications": "QA Engineer",
+  "decision_date": "2025-12-15T19:06:51.528918",
+  "review_type": "recommended",
+  "decision": "approved",
+  "original_classification": "R2",
+  "final_classification": "R2",
+  "approval": {
+    "review_id": "ER-20251215-59ed0d27",
+    "reviewer_name": "Regression Tester",
+    "reviewer_qualifications": "QA Engineer",
+    "decision_date": "2025-12-15T19:06:51.528912",
+    "expert_comments": null,
+    "classification_approved": "R2"
+  },
+  "override": null,
+  "info_request": null,
+  "review_triggers": [
+    {
+      "trigger_id": "ER2",
+      "description": "Test review",
+      "severity": "recommended"
+    }
+  ],
+  "outcome": "Approved for regression test"
+}

@@ -1,0 +1,31 @@
+{
+  "review_id": "ER-20251215-d0a2cc94",
+  "intake_id": "metric-test-1",
+  "project_name": "Test Project 1",
+  "requested_by": "System",
+  "request_date": "2025-12-15T09:43:37.174340",
+  "review_type": "recommended",
+  "intake_answers": {
+    "q1_users": "Internal",
+    "q2_influence": "Informational",
+    "q3_worst_failure": "Annoyance",
+    "q4_reversibility": "Easy",
+    "q5_domain": "Yes",
+    "q6_scale": "Individual",
+    "q7_regulated": "No"
+  },
+  "calculated_classification": "R0",
+  "confidence": "HIGH",
+  "warnings": [],
+  "review_triggers": [
+    {
+      "trigger_id": "TEST",
+      "description": "Test",
+      "severity": "recommended"
+    }
+  ],
+  "user_comment": null,
+  "status": "approved",
+  "assigned_to": null,
+  "sla_due_date": "2025-12-22T09:43:37.174326"
+}

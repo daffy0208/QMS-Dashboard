@@ -1,0 +1,13 @@
+{
+  "total_intakes": 0,
+  "review_requests": 5,
+  "mandatory_reviews": 2,
+  "recommended_reviews": 3,
+  "approvals": 4,
+  "overrides": 0,
+  "upgrades": 0,
+  "downgrades": 0,
+  "avg_turnaround_hours": 4.041666666666667e-08,
+  "sla_met_count": 4,
+  "sla_exceeded_count": 0
+}

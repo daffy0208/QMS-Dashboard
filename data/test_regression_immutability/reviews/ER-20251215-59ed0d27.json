@@ -1,0 +1,29 @@
+{
+  "review_id": "ER-20251215-59ed0d27",
+  "intake_id": "immutability-test",
+  "project_name": "Immutability Regression Test",
+  "requested_by": "System",
+  "request_date": "2025-12-15T19:06:51.528775",
+  "review_type": "recommended",
+  "intake_answers": {
+    "q1_users": "Internal",
+    "q2_influence": "Recommendations",
+    "q3_worst_failure": "Financial",
+    "q4_reversibility": "Easy",
+    "q5_domain": "Partially",
+    "q6_scale": "Multi_team",
+    "q7_regulated": "No"
+  },
+  "calculated_classification": "R2",
+  "confidence": "HIGH",
+  "warnings": [],
+  "review_triggers": [
+    {
+      "trigger_id": "ER2",
+      "description": "Test review",
+      "severity": "recommended"
+    }
+  ],
+  "user_comment": null,
+  "status": "approved"
+}

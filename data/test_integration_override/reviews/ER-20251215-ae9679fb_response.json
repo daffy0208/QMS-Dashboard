@@ -1,0 +1,41 @@
+{
+  "review_id": "ER-20251215-ae9679fb",
+  "intake_id": "integration-override",
+  "project_name": "Payment Processing Integration",
+  "reviewer_name": "Dr. Alex Chen",
+  "reviewer_qualifications": "Financial Systems QA Lead",
+  "decision_date": "2025-12-15T12:54:39.923345",
+  "review_type": "recommended",
+  "decision": "overridden",
+  "original_classification": "R2",
+  "final_classification": "R2",
+  "approval": null,
+  "override": {
+    "review_id": "ER-20251215-ae9679fb",
+    "reviewer_name": "Dr. Alex Chen",
+    "reviewer_qualifications": "Financial Systems QA Lead",
+    "decision_date": "2025-12-15T12:54:39.923336",
+    "original_classification": "R2",
+    "new_classification": "R2",
+    "justification": "Financial impact at multi-team scale combined with automated processing and partial reversibility requires R2 rigor. The system processes payment data that could lead to significant financial errors affecting multiple teams.",
+    "intake_discrepancies": [
+      {
+        "question_id": "q3_worst_failure",
+        "original_answer": "Financial",
+        "actual_situation": "Financial loss at multi-team scale with payment processing",
+        "explanation": "User underestimated the financial impact severity"
+      }
+    ],
+    "additional_factors": "Payment processing systems require strict compliance. Multi-team scale amplifies risk.",
+    "risks_accepted": null
+  },
+  "info_request": null,
+  "review_triggers": [
+    {
+      "trigger_id": "ER2",
+      "description": "Borderline classification - expert review recommended",
+      "severity": "recommended"
+    }
+  ],
+  "outcome": "Classification overridden from R2 to R2"
+}

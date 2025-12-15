@@ -1,0 +1,344 @@
+"""
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! PHASE 5 V2+ - DEFERRED !!
+!!
+!! This file contains Phase 5 v2+ features that exceed v1 scope.
+!! Email notifications, SMTP, and external service dependencies are NOT part of v1.
+!!
+!! Phase 5 v1 is a RECORDED DECISION system, not a workflow engine.
+!! Do not import or use this file until Phase 5 v2 implementation.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Email Notification System for Expert Reviews.
+Sends review requests and notifications via SMTP.
+
+**STATUS:** QUARANTINED - Phase 5 v2+
+**REASON:** Email infrastructure exceeds v1 scope
+"""
+
+import os
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from datetime import datetime
+from typing import Optional
+import sys
+from pathlib import Path
+
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from models.review import ReviewRequest, ReviewResponse
+
+
+class EmailConfig:
+    """Email configuration from environment variables."""
+
+    def __init__(self):
+        self.smtp_host = os.getenv("SMTP_HOST", "localhost")
+        self.smtp_port = int(os.getenv("SMTP_PORT", "587"))
+        self.smtp_user = os.getenv("SMTP_USER", "")
+        self.smtp_password = os.getenv("SMTP_PASSWORD", "")
+        self.smtp_from = os.getenv("SMTP_FROM", "qms-dashboard@example.com")
+        self.smtp_use_tls = os.getenv("SMTP_USE_TLS", "true").lower() == "true"
+
+        # Expert reviewer email addresses
+        self.expert_emails = os.getenv("EXPERT_EMAILS", "expert@example.com").split(",")
+
+        # Enable/disable email sending
+        self.email_enabled = os.getenv("EMAIL_ENABLED", "false").lower() == "true"
+
+    def is_configured(self) -> bool:
+        """Check if email is properly configured."""
+        return self.email_enabled and bool(self.smtp_host and self.smtp_from)
+
+
+class EmailNotificationService:
+    """Service for sending email notifications."""
+
+    def __init__(self, config: Optional[EmailConfig] = None):
+        self.config = config or EmailConfig()
+
+    def send_review_request(
+        self,
+        review_request: ReviewRequest,
+        review_url: Optional[str] = None
+    ) -> bool:
+        """
+        Send expert review request email.
+
+        Args:
+            review_request: ReviewRequest to send
+            review_url: Optional URL to review interface
+
+        Returns:
+            True if email sent successfully, False otherwise
+        """
+        if not self.config.is_configured():
+            print("[EMAIL] Email not configured - skipping notification")
+            print(f"[EMAIL] Would have sent review request: {review_request.review_id}")
+            return False
+
+        try:
+            # Import formatting functions
+            from review.request_generator import (
+                format_review_email_subject,
+                format_review_email_body
+            )
+
+            subject = format_review_email_subject(review_request)
+            body = format_review_email_body(review_request, review_url)
+
+            # Determine recipients based on review type
+            if review_request.assigned_to:
+                recipients = [review_request.assigned_to]
+            else:
+                recipients = self.config.expert_emails
+
+            # Send email
+            return self._send_email(
+                to_addresses=recipients,
+                subject=subject,
+                body=body,
+                priority="high" if review_request.review_type == "mandatory" else "normal"
+            )
+
+        except Exception as e:
+            print(f"[EMAIL] Error sending review request: {e}")
+            return False
+
+    def send_review_reminder(
+        self,
+        review_request: ReviewRequest,
+        review_url: Optional[str] = None
+    ) -> bool:
+        """
+        Send reminder email for pending review.
+
+        Args:
+            review_request: ReviewRequest to remind about
+            review_url: Optional URL to review interface
+
+        Returns:
+            True if email sent successfully
+        """
+        if not self.config.is_configured():
+            print("[EMAIL] Email not configured - skipping reminder")
+            return False
+
+        try:
+            subject = f"REMINDER: {review_request.project_name} Review ({review_request.review_id})"
+
+            sla_str = review_request.sla_due_date.strftime('%Y-%m-%d %H:%M') if review_request.sla_due_date else "N/A"
+
+            body = f"""
+REMINDER: Expert Review Pending
+{'='*60}
+
+This is a reminder that an expert review is still pending.
+
+Project: {review_request.project_name}
+Review ID: {review_request.review_id}
+Review Type: {review_request.review_type.upper()}
+Calculated Risk: {review_request.calculated_classification}
+SLA Due Date: {sla_str} UTC
+Request Date: {review_request.request_date.strftime('%Y-%m-%d %H:%M')} UTC
+
+"""
+
+            if review_url:
+                body += f"""
+Review Interface:
+{review_url}
+
+"""
+
+            body += """
+Please complete this review at your earliest convenience.
+
+Thank you,
+QMS Dashboard System
+"""
+
+            recipients = [review_request.assigned_to] if review_request.assigned_to else self.config.expert_emails
+
+            return self._send_email(
+                to_addresses=recipients,
+                subject=subject,
+                body=body,
+                priority="high" if review_request.review_type == "mandatory" else "normal"
+            )
+
+        except Exception as e:
+            print(f"[EMAIL] Error sending reminder: {e}")
+            return False
+
+    def send_review_complete_notification(
+        self,
+        review_response: ReviewResponse,
+        user_email: str
+    ) -> bool:
+        """
+        Notify user that expert review is complete.
+
+        Args:
+            review_response: Completed review response
+            user_email: User's email address
+
+        Returns:
+            True if email sent successfully
+        """
+        if not self.config.is_configured():
+            print("[EMAIL] Email not configured - skipping notification")
+            return False
+
+        try:
+            decision_label = review_response.decision.upper()
+            subject = f"Expert Review Complete: {review_response.project_name} - {decision_label}"
+
+            body = f"""
+Expert Review Complete
+{'='*60}
+
+Your quality intake has been reviewed by an expert.
+
+Project: {review_response.project_name}
+Review ID: {review_response.review_id}
+Intake ID: {review_response.intake_id}
+
+Original Classification: {review_response.original_classification}
+Final Classification: {review_response.final_classification}
+
+Expert Decision: {decision_label}
+Reviewed by: {review_response.reviewer_name}
+Review Date: {review_response.decision_date.strftime('%Y-%m-%d %H:%M')} UTC
+
+"""
+
+            if review_response.decision == "approved":
+                body += f"""
+✅ CLASSIFICATION APPROVED
+
+The expert has approved your calculated classification of {review_response.final_classification}.
+"""
+                if review_response.approval and review_response.approval.expert_comments:
+                    body += f"""
+Expert Comments:
+{review_response.approval.expert_comments}
+"""
+
+            elif review_response.decision == "overridden":
+                body += f"""
+🔄 CLASSIFICATION OVERRIDDEN
+
+The expert has adjusted your classification from {review_response.original_classification} to {review_response.final_classification}.
+
+Justification:
+{review_response.override.justification if review_response.override else 'N/A'}
+"""
+                if review_response.override and review_response.override.additional_factors:
+                    body += f"""
+Additional Factors Considered:
+{review_response.override.additional_factors}
+"""
+
+            elif review_response.decision == "info_requested":
+                body += f"""
+ℹ️ MORE INFORMATION NEEDED
+
+The expert has requested additional information before making a decision.
+
+Questions:
+{review_response.info_request.questions if review_response.info_request else 'N/A'}
+
+Please respond with the requested information so the review can be completed.
+"""
+
+            body += f"""
+
+{'='*60}
+
+Next Steps:
+- Review the expert's decision and any comments
+- Generate QMS artifacts for {review_response.final_classification} classification
+- Proceed with project implementation
+
+Thank you,
+QMS Dashboard System
+"""
+
+            return self._send_email(
+                to_addresses=[user_email],
+                subject=subject,
+                body=body
+            )
+
+        except Exception as e:
+            print(f"[EMAIL] Error sending completion notification: {e}")
+            return False
+
+    def _send_email(
+        self,
+        to_addresses: list[str],
+        subject: str,
+        body: str,
+        priority: str = "normal"
+    ) -> bool:
+        """
+        Send email via SMTP.
+
+        Args:
+            to_addresses: List of recipient email addresses
+            subject: Email subject
+            body: Email body (plain text)
+            priority: "high" or "normal"
+
+        Returns:
+            True if sent successfully
+        """
+        try:
+            # Create message
+            msg = MIMEMultipart()
+            msg['From'] = self.config.smtp_from
+            msg['To'] = ', '.join(to_addresses)
+            msg['Subject'] = subject
+            msg['Date'] = datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S +0000')
+
+            if priority == "high":
+                msg['X-Priority'] = '1'
+                msg['Importance'] = 'high'
+
+            # Attach body
+            msg.attach(MIMEText(body, 'plain'))
+
+            # Connect and send
+            if self.config.smtp_use_tls:
+                server = smtplib.SMTP(self.config.smtp_host, self.config.smtp_port)
+                server.starttls()
+            else:
+                server = smtplib.SMTP(self.config.smtp_host, self.config.smtp_port)
+
+            if self.config.smtp_user and self.config.smtp_password:
+                server.login(self.config.smtp_user, self.config.smtp_password)
+
+            server.send_message(msg)
+            server.quit()
+
+            print(f"[EMAIL] Sent email to {', '.join(to_addresses)}: {subject}")
+            return True
+
+        except Exception as e:
+            print(f"[EMAIL] Failed to send email: {e}")
+            return False
+
+
+# Global email service instance
+_email_service: Optional[EmailNotificationService] = None
+
+
+def get_email_service() -> EmailNotificationService:
+    """Get or create email service singleton."""
+    global _email_service
+    if _email_service is None:
+        _email_service = EmailNotificationService()
+    return _email_service

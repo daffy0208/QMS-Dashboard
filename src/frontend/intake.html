@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Quality Intake - QMS Dashboard</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .version {
+            color: #7f8c8d;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .purpose {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            font-size: 15px;
+        }
+
+        .question-block {
+            margin-bottom: 35px;
+            padding-bottom: 35px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .question-block:last-of-type {
+            border-bottom: none;
+        }
+
+        .question-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .question-subtitle {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .options {
+            margin-bottom: 15px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option:hover {
+            border-color: #3498db;
+            background-color: #f8f9fa;
+        }
+
+        .option input[type="radio"] {
+            margin-right: 12px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+
+        .option label {
+            cursor: pointer;
+            flex: 1;
+            font-size: 15px;
+        }
+
+        .option-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .option-desc {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-left: 5px;
+        }
+
+        details {
+            margin-top: 15px;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+
+        summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: #3498db;
+            font-size: 14px;
+            user-select: none;
+        }
+
+        summary:hover {
+            color: #2980b9;
+        }
+
+        details[open] summary {
+            margin-bottom: 12px;
+        }
+
+        .example-content {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .example-category {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-top: 8px;
+        }
+
+        .key-question {
+            background-color: #fff9e6;
+            border-left: 4px solid #f39c12;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .error-message {
+            background-color: #fee;
+            border: 1px solid #fcc;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #c00;
+            display: none;
+        }
+
+        .submit-section {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .submit-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .submit-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .submit-btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .next-steps {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 5px;
+        }
+
+        .next-steps h2 {
+            color: #2c3e50;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .next-steps ol {
+            margin-left: 20px;
+            color: #555;
+        }
+
+        .next-steps li {
+            margin-bottom: 8px;
+        }
+
+        .tips {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .tips strong {
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Project Quality Intake</h1>
+            <div class="version">Version 1.0</div>
+        </div>
+
+        <div class="purpose">
+            <strong>Purpose:</strong> Answer 7 questions to determine your project's quality management needs. Takes about 5-10 minutes.
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+
+        <form id="intakeForm">
+            <!-- Question 1 -->
+            <div class="question-block">
+                <div class="question-title">1. Who are the users?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" id="q1_internal" name="q1_users" value="Internal" required>
+                        <label for="q1_internal">
+                            <span class="option-name">Internal</span>
+                            <span class="option-desc">- Only people in your organization</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q1_external" name="q1_users" value="External">
+                        <label for="q1_external">
+                            <span class="option-name">External</span>
+                            <span class="option-desc">- Specific clients, partners, or vendors</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q1_public" name="q1_users" value="Public">
+                        <label for="q1_public">
+                            <span class="option-name">Public</span>
+                            <span class="option-desc">- Anyone (general public)</span>
+                        </label>
+                    </div>
+                </div>
+                <details>
+                    <summary>💡 Examples</summary>
+                    <div class="example-content">
+                        <div><span class="example-category">Internal:</span> Employee dashboard, internal API, team tool</div>
+                        <div><span class="example-category">External:</span> Client portal, partner integration, B2B product</div>
+                        <div><span class="example-category">Public:</span> Public website, mobile app, open-source tool</div>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="question-block">
+                <div class="question-title">2. What decisions or actions will this system influence?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" id="q2_informational" name="q2_influence" value="Informational" required>
+                        <label for="q2_informational">
+                            <span class="option-name">Informational only</span>
+                            <span class="option-desc">- Shows data, people verify independently</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q2_recommendations" name="q2_influence" value="Recommendations">
+                        <label for="q2_recommendations">
+                            <span class="option-name">Recommendations</span>
+                            <span class="option-desc">- Suggests actions, people usually follow</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q2_automated" name="q2_influence" value="Automated">
+                        <label for="q2_automated">
+                            <span class="option-name">Automated actions</span>
+                            <span class="option-desc">- System does things automatically</span>
+                        </label>
+                    </div>
+                </div>
+                <details>
+                    <summary>💡 Examples</summary>
+                    <div class="example-content">
+                        <div><span class="example-category">Informational:</span> Status dashboard, log viewer, monitoring display</div>
+                        <div><span class="example-category">Recommendations:</span> Code review suggestions, risk assessment, diagnosis assistant</div>
+                        <div><span class="example-category">Automated:</span> Auto-deploy, auto-trading, auto-billing, safety shutoff</div>
+                        <div class="key-question">
+                            <strong>Key question:</strong> If this gives wrong info, would people notice before acting on it?<br>
+                            - If YES → Informational<br>
+                            - If NO → Recommendations or Automated
+                        </div>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="question-block">
+                <div class="question-title">3. What is the worst realistic failure?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" id="q3_annoyance" name="q3_worst_failure" value="Annoyance" required>
+                        <label for="q3_annoyance">
+                            <span class="option-name">Annoyance</span>
+                            <span class="option-desc">- Minor inconvenience, easily fixed</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q3_financial" name="q3_worst_failure" value="Financial">
+                        <label for="q3_financial">
+                            <span class="option-name">Financial loss</span>
+                            <span class="option-desc">- Money lost, business costs</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q3_safety" name="q3_worst_failure" value="Safety_Legal_Compliance">
+                        <label for="q3_safety">
+                            <span class="option-name">Safety / legal / compliance</span>
+                            <span class="option-desc">- Someone hurt, legal trouble, violations</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q3_reputational" name="q3_worst_failure" value="Reputational">
+                        <label for="q3_reputational">
+                            <span class="option-name">Reputational damage</span>
+                            <span class="option-desc">- Brand harm, trust loss</span>
+                        </label>
+                    </div>
+                </div>
+                <details>
+                    <summary>💡 Examples</summary>
+                    <div class="example-content">
+                        <div><span class="example-category">Annoyance:</span> UI glitch, slow performance, temporary outage</div>
+                        <div><span class="example-category">Financial loss:</span> Wrong billing, service downtime costs, data error costs money</div>
+                        <div><span class="example-category">Safety/legal/compliance:</span> Medical error → patient harm, safety failure → injury, compliance violation → fines</div>
+                        <div><span class="example-category">Reputational damage:</span> Public data breach, offensive content, major service failure</div>
+                        <div class="key-question">
+                            <strong>Think about:</strong> Direct AND indirect consequences. What happens if people trust wrong information?
+                        </div>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="question-block">
+                <div class="question-title">4. How easily can failures be fixed?</div>
+                <div class="question-subtitle">Can you undo the <strong>consequences</strong> (not just fix the bug)?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" id="q4_easy" name="q4_reversibility" value="Easy" required>
+                        <label for="q4_easy">
+                            <span class="option-name">Easy</span>
+                            <span class="option-desc">- Quick to fix, no lasting harm</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q4_partial" name="q4_reversibility" value="Partial">
+                        <label for="q4_partial">
+                            <span class="option-name">Partial</span>
+                            <span class="option-desc">- Some things can be undone, some can't</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q4_hard" name="q4_reversibility" value="Hard">
+                        <label for="q4_hard">
+                            <span class="option-name">Hard / irreversible</span>
+                            <span class="option-desc">- Damage is done, can't be undone</span>
+                        </label>
+                    </div>
+                </div>
+                <details>
+                    <summary>💡 Examples</summary>
+                    <div class="example-content">
+                        <div><span class="example-category">Easy:</span> Display bug → refresh → fixed; Config error → rollback → restored</div>
+                        <div><span class="example-category">Partial:</span> Wrong data sent → can send correction, but trust damaged</div>
+                        <div><span class="example-category">Hard/irreversible:</span> Patient already harmed, money already lost, data permanently deleted</div>
+                        <div class="key-question">
+                            <strong>Important:</strong> Think about fixing <strong>consequences</strong>, not fixing <strong>code</strong>.
+                        </div>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="question-block">
+                <div class="question-title">5. Do you understand the problem domain?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" id="q5_yes" name="q5_domain" value="Yes" required>
+                        <label for="q5_yes">
+                            <span class="option-name">Yes</span>
+                            <span class="option-desc">- Team has experience, requirements are clear</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q5_partially" name="q5_domain" value="Partially">
+                        <label for="q5_partially">
+                            <span class="option-name">Partially</span>
+                            <span class="option-desc">- Some knowledge, but gaps remain</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q5_no" name="q5_domain" value="No">
+                        <label for="q5_no">
+                            <span class="option-name">No</span>
+                            <span class="option-desc">- New domain, needs research</span>
+                        </label>
+                    </div>
+                </div>
+                <details>
+                    <summary>💡 Examples</summary>
+                    <div class="example-content">
+                        <div><span class="example-category">Yes:</span> Building your 10th web app, standard CRUD, well-known technology</div>
+                        <div><span class="example-category">Partially:</span> New domain but standards exist, evolving requirements</div>
+                        <div><span class="example-category">No:</span> Cutting-edge AI/ML, new regulatory environment, requires specialized expertise</div>
+                        <div class="key-question">
+                            <strong>Be honest:</strong> Uncertainty is risk.
+                        </div>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Question 6 -->
+            <div class="question-block">
+                <div class="question-title">6. How many people will use this?</div>
+                <div class="question-subtitle">Think about the <strong>final state</strong>, not just the prototype.</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" id="q6_individual" name="q6_scale" value="Individual" required>
+                        <label for="q6_individual">
+                            <span class="option-name">Individual</span>
+                            <span class="option-desc">- Just you or one person</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q6_team" name="q6_scale" value="Team">
+                        <label for="q6_team">
+                            <span class="option-name">Team</span>
+                            <span class="option-desc">- One team (5-15 people)</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q6_multiteam" name="q6_scale" value="Multi_team">
+                        <label for="q6_multiteam">
+                            <span class="option-name">Multi-team</span>
+                            <span class="option-desc">- Multiple teams in your organization</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q6_org" name="q6_scale" value="Organization_Public">
+                        <label for="q6_org">
+                            <span class="option-name">Organization-wide / public</span>
+                            <span class="option-desc">- Entire company or external users</span>
+                        </label>
+                    </div>
+                </div>
+                <details>
+                    <summary>💡 Examples</summary>
+                    <div class="example-content">
+                        <div><span class="example-category">Individual:</span> Personal script, your own tool</div>
+                        <div><span class="example-category">Team:</span> Team dashboard, squad tool</div>
+                        <div><span class="example-category">Multi-team:</span> Company-wide service, cross-functional platform</div>
+                        <div><span class="example-category">Organization-wide/public:</span> Customer product, public API, company-critical infrastructure</div>
+                    </div>
+                </details>
+            </div>
+
+            <!-- Question 7 -->
+            <div class="question-block">
+                <div class="question-title">7. Is this project regulated or auditable?</div>
+                <div class="options">
+                    <div class="option">
+                        <input type="radio" id="q7_no" name="q7_regulated" value="No" required>
+                        <label for="q7_no">
+                            <span class="option-name">No</span>
+                            <span class="option-desc">- No regulations, no audits</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q7_possibly" name="q7_regulated" value="Possibly">
+                        <label for="q7_possibly">
+                            <span class="option-name">Possibly</span>
+                            <span class="option-desc">- Might be audited, or unclear</span>
+                        </label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="q7_yes" name="q7_regulated" value="Yes">
+                        <label for="q7_yes">
+                            <span class="option-name">Yes</span>
+                            <span class="option-desc">- Definitely regulated or audited</span>
+                        </label>
+                    </div>
+                </div>
+                <details>
+                    <summary>💡 Examples</summary>
+                    <div class="example-content">
+                        <div><span class="example-category">No:</span> Internal tool, personal project, non-critical prototype</div>
+                        <div><span class="example-category">Possibly:</span> Used in regulated industry, internal compliance, future regulation possible</div>
+                        <div><span class="example-category">Yes:</span> Medical device (FDA/EMA), financial system (SEC), pharmaceutical (GAMP 5), personal data (GDPR)</div>
+                        <div class="key-question">
+                            <strong>Not sure?</strong> Choose "Possibly" to be safe.
+                        </div>
+                    </div>
+                </details>
+            </div>
+
+            <div class="submit-section">
+                <button type="submit" class="submit-btn">Submit Intake</button>
+            </div>
+        </form>
+
+        <div class="next-steps">
+            <h2>What Happens Next</h2>
+            <ol>
+                <li>System analyzes your answers</li>
+                <li>Risk level calculated (R0=low, R1=medium, R2=high, R3=critical)</li>
+                <li>Warnings shown if anything looks contradictory or high-risk</li>
+                <li>Quality plan generated with required activities</li>
+            </ol>
+            <div class="tips">
+                <div><strong>You might see:</strong></div>
+                <ul style="list-style: none; margin-left: 0;">
+                    <li>✅ Classification successful - your quality plan is ready</li>
+                    <li>⚠️ Warnings or questions - something needs clarification</li>
+                    <li>🔍 Expert review recommended - an expert will confirm classification</li>
+                </ul>
+                <div style="margin-top: 15px;"><strong>Tips:</strong></div>
+                <ul style="list-style: none; margin-left: 0;">
+                    <li>• Be honest about your project's reality</li>
+                    <li>• Choose higher risk when uncertain (safer to over-prepare)</li>
+                    <li>• Ask for help if you're unsure</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="intake.js"></script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+{
+  "review_id": "ER-20251215-5f606d8a",
+  "intake_id": "integration-r3",
+  "project_name": "Medical Device Control System",
+  "requested_by": "System",
+  "request_date": "2025-12-15T12:54:39.921547",
+  "review_type": "mandatory",
+  "intake_answers": {
+    "q1_users": "External",
+    "q2_influence": "Automated",
+    "q3_worst_failure": "Safety_Legal_Compliance",
+    "q4_reversibility": "Hard",
+    "q5_domain": "Partially",
+    "q6_scale": "Multi_team",
+    "q7_regulated": "Yes"
+  },
+  "calculated_classification": "R3",
+  "confidence": "HIGH",
+  "warnings": [
+    {
+      "severity": "INFO",
+      "layer": "Layer1",
+      "message": "Automated actions detected",
+      "recommendation": "Ensure monitoring and safeguards exist"
+    },
+    {
+      "severity": "CRITICAL",
+      "layer": "CV1",
+      "message": "Automated actions with low reversibility and high impact",
+      "recommendation": "R3 classification strongly recommended. Implement fail-safes and human oversight."
+    },
+    {
+      "severity": "CRITICAL",
+      "layer": "I1",
+      "message": "HIGH RISK: Safety/legal/compliance worst case detected",
+      "recommendation": "R3 classification typical. 11 artifacts required. Strict rigor mandatory unless strong mitigations exist."
+    },
+    {
+      "severity": "WARNING",
+      "layer": "I4",
+      "message": "High-stakes system in partially understood domain",
+      "recommendation": "Increase research, expert consultation, and validation. Per intake rules: 'If uncertain, select higher risk.'"
+    },
+    {
+      "severity": "CRITICAL",
+      "layer": "I4",
+      "message": "R3 system with incomplete domain understanding",
+      "recommendation": "Mandatory expert review required"
+    },
+    {
+      "severity": "CRITICAL",
+      "layer": "W1",
+      "message": "R3 CLASSIFICATION - STRICT RIGOR MODE: This is the highest risk level requiring 11 mandatory quality artifacts, full V&V, and no downgrades without deviation approval",
+      "recommendation": "Confirm you understand R3 requirements before proceeding. Expert review recommended."
+    }
+  ],
+  "review_triggers": [
+    {
+      "trigger_id": "ER1",
+      "description": "Safety-critical system requiring expert validation",
+      "severity": "mandatory"
+    }
+  ],
+  "user_comment": "Need validation for medical device deployment",
+  "status": "pending"
+}

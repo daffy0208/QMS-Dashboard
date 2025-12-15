@@ -1,0 +1,29 @@
+{
+  "review_id": "ER-20251215-0dfd3d4b",
+  "intake_id": "override-test",
+  "project_name": "Borderline System",
+  "requested_by": "System",
+  "request_date": "2025-12-15T10:44:00.365821",
+  "review_type": "recommended",
+  "intake_answers": {
+    "q1_users": "Internal",
+    "q2_influence": "Recommendations",
+    "q3_worst_failure": "Financial",
+    "q4_reversibility": "Partial",
+    "q5_domain": "Partially",
+    "q6_scale": "Multi_team",
+    "q7_regulated": "No"
+  },
+  "calculated_classification": "R1",
+  "confidence": "MEDIUM",
+  "warnings": [],
+  "review_triggers": [
+    {
+      "trigger_id": "ER2",
+      "description": "Borderline classification",
+      "severity": "recommended"
+    }
+  ],
+  "user_comment": null,
+  "status": "overridden"
+}

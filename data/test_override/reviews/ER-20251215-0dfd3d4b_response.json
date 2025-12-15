@@ -1,0 +1,41 @@
+{
+  "review_id": "ER-20251215-0dfd3d4b",
+  "intake_id": "override-test",
+  "project_name": "Borderline System",
+  "reviewer_name": "Dr. John Doe",
+  "reviewer_qualifications": "Lead Quality Engineer",
+  "decision_date": "2025-12-15T10:44:00.365896",
+  "review_type": "recommended",
+  "decision": "overridden",
+  "original_classification": "R1",
+  "final_classification": "R2",
+  "approval": null,
+  "override": {
+    "review_id": "ER-20251215-0dfd3d4b",
+    "reviewer_name": "Dr. John Doe",
+    "reviewer_qualifications": "Lead Quality Engineer",
+    "decision_date": "2025-12-15T10:44:00.365891",
+    "original_classification": "R1",
+    "new_classification": "R2",
+    "justification": "While the intake suggests R1, the financial loss potential at multi-team scale combined with partial reversibility requires R2 rigor. The system's recommendations could lead to significant financial decisions affecting multiple teams, warranting stricter quality controls.",
+    "intake_discrepancies": [
+      {
+        "question_id": "q3_worst_failure",
+        "original_answer": "Financial",
+        "actual_situation": "Financial loss at Multi_team scale is more serious than answered",
+        "explanation": "User underestimated the financial impact at multi-team scale"
+      }
+    ],
+    "additional_factors": "Multi-team scale amplifies financial risk. Organization policy requires R2+ for financial systems.",
+    "risks_accepted": null
+  },
+  "info_request": null,
+  "review_triggers": [
+    {
+      "trigger_id": "ER2",
+      "description": "Borderline classification",
+      "severity": "recommended"
+    }
+  ],
+  "outcome": "Classification overridden from R1 to R2"
+}

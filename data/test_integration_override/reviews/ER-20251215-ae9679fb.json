@@ -1,0 +1,29 @@
+{
+  "review_id": "ER-20251215-ae9679fb",
+  "intake_id": "integration-override",
+  "project_name": "Payment Processing Integration",
+  "requested_by": "System",
+  "request_date": "2025-12-15T12:54:39.923138",
+  "review_type": "recommended",
+  "intake_answers": {
+    "q1_users": "Internal",
+    "q2_influence": "Recommendations",
+    "q3_worst_failure": "Financial",
+    "q4_reversibility": "Partial",
+    "q5_domain": "Partially",
+    "q6_scale": "Multi_team",
+    "q7_regulated": "No"
+  },
+  "calculated_classification": "R2",
+  "confidence": "HIGH",
+  "warnings": [],
+  "review_triggers": [
+    {
+      "trigger_id": "ER2",
+      "description": "Borderline classification - expert review recommended",
+      "severity": "recommended"
+    }
+  ],
+  "user_comment": null,
+  "status": "overridden"
+}

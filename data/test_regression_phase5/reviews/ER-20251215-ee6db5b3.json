@@ -1,0 +1,29 @@
+{
+  "review_id": "ER-20251215-ee6db5b3",
+  "intake_id": "phase5-regression",
+  "project_name": "Phase 5 Regression Test",
+  "requested_by": "System",
+  "request_date": "2025-12-15T19:06:51.528079",
+  "review_type": "recommended",
+  "intake_answers": {
+    "q1_users": "Internal",
+    "q2_influence": "Recommendations",
+    "q3_worst_failure": "Financial",
+    "q4_reversibility": "Easy",
+    "q5_domain": "Partially",
+    "q6_scale": "Multi_team",
+    "q7_regulated": "No"
+  },
+  "calculated_classification": "R2",
+  "confidence": "HIGH",
+  "warnings": [],
+  "review_triggers": [
+    {
+      "trigger_id": "ER2",
+      "description": "Regression test review",
+      "severity": "recommended"
+    }
+  ],
+  "user_comment": null,
+  "status": "pending"
+}

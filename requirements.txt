@@ -1,0 +1,14 @@
+# QMS Dashboard - Python Dependencies
+# Phase 1: Core Intake System
+
+# FastAPI framework
+fastapi>=0.109.0
+
+# ASGI server
+uvicorn[standard]>=0.27.0
+
+# Data validation
+pydantic>=2.7.0
+
+# Python 3.11+ compatibility
+typing-extensions>=4.12.2

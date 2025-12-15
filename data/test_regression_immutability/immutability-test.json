@@ -1,0 +1,37 @@
+{
+  "intake_id": "immutability-test",
+  "project_name": "Immutability Regression Test",
+  "timestamp": "2025-12-15T19:06:51.528519",
+  "answers": {
+    "q1_users": "Internal",
+    "q2_influence": "Recommendations",
+    "q3_worst_failure": "Financial",
+    "q4_reversibility": "Easy",
+    "q5_domain": "Partially",
+    "q6_scale": "Multi_team",
+    "q7_regulated": "No"
+  },
+  "classification": {
+    "risk_level": "R2",
+    "rigor": "Strict",
+    "rationale": "R2 due to: Decision-impacting recommendations",
+    "borderline": false
+  },
+  "warnings": [],
+  "expert_review_required": false,
+  "expert_review_recommended": true,
+  "next_steps": [],
+  "artifacts_required": [
+    "Quality Plan",
+    "CTQ Tree",
+    "Assumptions Register",
+    "Risk Register",
+    "Traceability Index",
+    "Verification Plan",
+    "Validation Plan",
+    "Measurement Plan",
+    "Control Plan",
+    "Change Log",
+    "CAPA Log"
+  ]
+}
