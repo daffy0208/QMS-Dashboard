@@ -46,6 +46,14 @@ from models.review import (
     ReviewTrigger,
     IntakeDiscrepancy
 )
+
+# Phase 8A WS-1: Artifact validation
+from artifacts.validator import (
+    ArtifactValidator,
+    ValidationResult,
+    ValidationIssue,
+    validate_project_artifacts
+)
 from validation.classifier import classify_risk, get_required_artifacts
 from validation.layer1 import validate_intake_answers, validate_project_name
 from validation.layer2 import cross_validate
@@ -55,6 +63,85 @@ from validation.layer5 import determine_expert_review
 from artifacts.generator import generate_project_artifacts
 from review.request_generator import create_review_request
 from review.storage import get_review_storage
+
+from pydantic import BaseModel, Field
+from typing import Dict, List, Optional
+
+
+# Phase 8A WS-1.4: Response contract for artifact health API
+class ArtifactHealthSummary(BaseModel):
+    """
+    Health status for a single artifact.
+
+    Contract: Reports current completeness state without prescribing action.
+    """
+    artifact_name: str = Field(description="Name of the artifact (e.g., 'Quality Plan')")
+    risk_level: str = Field(description="Risk level this artifact was validated against (R0-R3)")
+    completion_percent: float = Field(
+        ge=0.0, le=1.0,
+        description="Completeness score (0.0-1.0). NOT a quality grade, just current state."
+    )
+    valid: bool = Field(description="True if meets acceptance criteria with no errors")
+    issue_count: int = Field(description="Total number of validation issues")
+    error_count: int = Field(description="Number of error-severity issues")
+    warning_count: int = Field(description="Number of warning-severity issues")
+    missing_sections: List[str] = Field(description="Required sections not found or empty")
+    placeholder_count: int = Field(description="Number of unfilled placeholders detected")
+
+    # Top issues (limited to avoid overwhelming response)
+    top_issues: List[str] = Field(
+        max_items=5,
+        description="Up to 5 most important issues (human-readable messages)"
+    )
+
+
+class ProjectArtifactHealth(BaseModel):
+    """
+    Overall health status for all artifacts in a project.
+
+    Response contract - What this API promises:
+    1. Reports current state (NOT predictions or judgments)
+    2. Flags gaps (NOT prescriptive "you must fix X")
+    3. Aggregates completeness (NOT workflow blocking)
+    4. Surfaces issues (NOT solutions - that's WS-3)
+
+    Messaging discipline - What this API does NOT imply:
+    - Does NOT say "you cannot proceed"
+    - Does NOT predict expert review outcome (that's WS-4)
+    - Does NOT suggest next actions (that's WS-2 smart next-steps)
+    - Does NOT provide improvement guidance (that's WS-3)
+
+    This API is DIAGNOSTIC ONLY.
+    """
+    intake_id: str = Field(description="Intake ID these artifacts belong to")
+    project_name: str = Field(description="Project name")
+    risk_level: str = Field(description="Project risk level (R0-R3)")
+
+    overall_completion: float = Field(
+        ge=0.0, le=1.0,
+        description="Weighted average completion across all artifacts. NOT a quality score."
+    )
+
+    artifacts: Dict[str, ArtifactHealthSummary] = Field(
+        description="Per-artifact health summaries (keyed by artifact name)"
+    )
+
+    # Aggregate stats
+    total_artifacts: int = Field(description="Number of artifacts validated")
+    complete_artifacts: int = Field(description="Number of artifacts meeting acceptance criteria")
+    artifacts_with_errors: int = Field(description="Number of artifacts with error-level issues")
+
+    # High-level observations (NOT commands)
+    observations: List[str] = Field(
+        max_items=3,
+        description="High-level observations about artifact state (e.g., 'Most artifacts incomplete')"
+    )
+
+    # Optional: Path to artifacts directory (for reference)
+    artifacts_path: Optional[str] = Field(
+        default=None,
+        description="Filesystem path to artifacts (if available)"
+    )
 
 
 # Phase 7 WS-1: Validate configuration on startup
@@ -761,6 +848,226 @@ async def override_review(review_id: str, override: ReviewOverride):
 # ============================================================================
 # End of Expert Review Endpoints
 # ============================================================================
+
+
+# ============================================================================
+# Phase 8A WS-1.4: Artifact Health Endpoint
+# ============================================================================
+
+@app.get("/api/intake/{intake_id}/artifact-health", response_model=ProjectArtifactHealth)
+async def get_artifact_health(intake_id: str):
+    """
+    Get health status for all artifacts in a project.
+
+    Phase 8A WS-1.4: Diagnostic API - reports current artifact state.
+
+    Returns:
+        ProjectArtifactHealth with per-artifact validation results
+
+    Contract:
+        - Reports completeness (0.0-1.0) without judging quality
+        - Flags validation issues without prescribing fixes
+        - Aggregates results without blocking workflow
+        - NO predictions, NO commands, NO guidance
+
+    Messaging discipline:
+        This endpoint is DIAGNOSTIC ONLY. It does not:
+        - Block artifact generation
+        - Predict expert review outcomes
+        - Provide improvement suggestions (that's WS-3)
+        - Dictate next actions (that's WS-2)
+    """
+    # Phase 7 WS-2: Validate intake ID format
+    if not validate_intake_id(intake_id):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid intake ID format"
+        )
+
+    # Load intake response
+    file_path = DATA_DIR / f"{intake_id}.json"
+    if not file_path.exists():
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Intake {intake_id} not found"
+        )
+
+    with open(file_path, 'r') as f:
+        intake_data = json.load(f)
+
+    intake_response = IntakeResponse(**intake_data)
+    project_name = intake_response.project_name
+    risk_level = intake_response.classification.risk_level
+
+    # Check if artifacts exist
+    artifacts_dir = config.get_artifacts_path(intake_id)
+    if not artifacts_dir.exists():
+        # Artifacts not generated yet
+        return ProjectArtifactHealth(
+            intake_id=intake_id,
+            project_name=project_name,
+            risk_level=risk_level,
+            overall_completion=0.0,
+            artifacts={},
+            total_artifacts=0,
+            complete_artifacts=0,
+            artifacts_with_errors=0,
+            observations=["Artifacts not yet generated"],
+            artifacts_path=str(artifacts_dir)
+        )
+
+    # Validate all artifacts
+    validation_results = validate_project_artifacts(artifacts_dir, risk_level)
+
+    # Aggregate results (Step 2: Aggregation logic)
+    health = _aggregate_artifact_health(
+        intake_id=intake_id,
+        project_name=project_name,
+        risk_level=risk_level,
+        validation_results=validation_results,
+        artifacts_path=str(artifacts_dir)
+    )
+
+    return health
+
+
+# ============================================================================
+# Helper Functions
+# ============================================================================
+
+def _aggregate_artifact_health(
+    intake_id: str,
+    project_name: str,
+    risk_level: str,
+    validation_results: Dict[str, ValidationResult],
+    artifacts_path: str
+) -> ProjectArtifactHealth:
+    """
+    Aggregate validation results into project health summary.
+
+    Aggregation logic (Step 2):
+    1. Convert ValidationResult → ArtifactHealthSummary per artifact
+    2. Calculate weighted average completion
+    3. Count totals (complete, with errors, etc.)
+    4. Generate observations (descriptive, NOT prescriptive)
+
+    Messaging discipline enforced:
+    - Observations describe state ("Most artifacts incomplete")
+    - Observations do NOT command ("Fix X before Y")
+    - Observations do NOT predict ("Will likely fail review")
+    """
+    artifact_summaries: Dict[str, ArtifactHealthSummary] = {}
+
+    for artifact_name, result in validation_results.items():
+        # Count issues by severity
+        error_count = sum(1 for issue in result.issues if issue.severity == "error")
+        warning_count = sum(1 for issue in result.issues if issue.severity == "warning")
+
+        # Extract top 5 issues (most important)
+        top_issues = [
+            issue.message for issue in result.issues[:5]
+        ]
+
+        artifact_summaries[artifact_name] = ArtifactHealthSummary(
+            artifact_name=artifact_name,
+            risk_level=result.risk_level,
+            completion_percent=result.completion_percent,
+            valid=result.valid,
+            issue_count=len(result.issues),
+            error_count=error_count,
+            warning_count=warning_count,
+            missing_sections=result.missing_sections,
+            placeholder_count=result.placeholder_count,
+            top_issues=top_issues
+        )
+
+    # Calculate aggregate stats
+    total_artifacts = len(artifact_summaries)
+    complete_artifacts = sum(1 for summary in artifact_summaries.values() if summary.valid)
+    artifacts_with_errors = sum(1 for summary in artifact_summaries.values() if summary.error_count > 0)
+
+    # Calculate weighted average completion
+    if total_artifacts > 0:
+        overall_completion = sum(
+            summary.completion_percent for summary in artifact_summaries.values()
+        ) / total_artifacts
+    else:
+        overall_completion = 0.0
+
+    # Generate observations (descriptive, NOT prescriptive)
+    observations = _generate_observations(
+        overall_completion=overall_completion,
+        complete_artifacts=complete_artifacts,
+        total_artifacts=total_artifacts,
+        artifacts_with_errors=artifacts_with_errors
+    )
+
+    return ProjectArtifactHealth(
+        intake_id=intake_id,
+        project_name=project_name,
+        risk_level=risk_level,
+        overall_completion=overall_completion,
+        artifacts=artifact_summaries,
+        total_artifacts=total_artifacts,
+        complete_artifacts=complete_artifacts,
+        artifacts_with_errors=artifacts_with_errors,
+        observations=observations,
+        artifacts_path=artifacts_path
+    )
+
+
+def _generate_observations(
+    overall_completion: float,
+    complete_artifacts: int,
+    total_artifacts: int,
+    artifacts_with_errors: int
+) -> List[str]:
+    """
+    Generate high-level observations about artifact health.
+
+    Step 3: Messaging discipline
+    - Use descriptive language ("X artifacts have Y")
+    - Avoid commands ("You must fix X")
+    - Avoid predictions ("This will fail review")
+    - Avoid judgments ("This is poor quality")
+
+    Acceptable:
+    - "Most artifacts are incomplete"
+    - "Several artifacts have validation errors"
+    - "Placeholder text detected in multiple artifacts"
+
+    NOT acceptable:
+    - "Fix placeholders before review"
+    - "You cannot proceed with incomplete artifacts"
+    - "This project will fail expert review"
+    """
+    observations = []
+
+    # Observation 1: Overall completeness
+    if overall_completion >= 0.8:
+        observations.append(f"Most artifacts complete ({int(overall_completion * 100)}% overall)")
+    elif overall_completion >= 0.5:
+        observations.append(f"Artifacts partially complete ({int(overall_completion * 100)}% overall)")
+    else:
+        observations.append(f"Most artifacts incomplete ({int(overall_completion * 100)}% overall)")
+
+    # Observation 2: Valid artifacts
+    if total_artifacts > 0:
+        if complete_artifacts == total_artifacts:
+            observations.append(f"All {total_artifacts} artifacts meet acceptance criteria")
+        elif complete_artifacts == 0:
+            observations.append(f"No artifacts currently meet acceptance criteria")
+        else:
+            observations.append(f"{complete_artifacts}/{total_artifacts} artifacts meet acceptance criteria")
+
+    # Observation 3: Errors present
+    if artifacts_with_errors > 0:
+        if artifacts_with_errors == total_artifacts:
+            observations.append(f"All artifacts have validation errors")
+        else:
+            observations.append(f"{artifacts_with_errors} artifact(s) have validation errors")
+
+    return observations[:3]  # Max 3 observations
 
 
 def _generate_next_steps(
