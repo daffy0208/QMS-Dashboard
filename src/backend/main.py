@@ -90,7 +90,7 @@ class ArtifactHealthSummary(BaseModel):
 
     # Top issues (limited to avoid overwhelming response)
     top_issues: List[str] = Field(
-        max_items=5,
+        max_length=5,
         description="Up to 5 most important issues (human-readable messages)"
     )
 
@@ -133,7 +133,7 @@ class ProjectArtifactHealth(BaseModel):
 
     # High-level observations (NOT commands)
     observations: List[str] = Field(
-        max_items=3,
+        max_length=3,
         description="High-level observations about artifact state (e.g., 'Most artifacts incomplete')"
     )
 
