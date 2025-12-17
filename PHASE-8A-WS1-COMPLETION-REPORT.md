@@ -322,6 +322,94 @@ acceptance_criteria.json ↔ validator.py ↔ templates/*.py
 
 ---
 
+## Explicit Contracts & Implicit Assumptions (Dark-Matter Review)
+
+**Post-completion review identified 6 implicit assumptions** that needed explicit documentation to prevent future misalignment. These are **not bugs or missing functionality**, but **unspoken contracts** that could cause silent failures as the system evolves.
+
+### Gap 1: Structure ≈ Intent Assumption
+
+**Issue:** Validator assumes structural completeness correlates with intent completeness. A future AI could generate syntactically perfect but semantically hollow content.
+
+**Status:** ✅ Addressed in SETUP-AND-DEVELOPMENT-GUIDE.md Section 7, Invariant 2
+
+**Resolution:** Explicit disclaimer that validator checks form, not meaning. Semantic judgment deferred to expert review (Phase 5), simulation (WS-4), and guidance engine (WS-3).
+
+---
+
+### Gap 2: Validator ≠ Gate (Implicit Boundary)
+
+**Issue:** Validator diagnoses but doesn't block—but this rule exists mainly in people's heads. A future contributor might add blocking logic.
+
+**Status:** ✅ Addressed in SETUP-AND-DEVELOPMENT-GUIDE.md Section 7, Invariant 1
+
+**Resolution:** Explicit rule: "Validator MUST NEVER block artifact generation or progression on its own." Gating is higher-order concern (WS-2 dependencies, WS-6 lifecycle).
+
+---
+
+### Gap 3: Placeholder Count Not Exposed as Teaching Signal
+
+**Issue:** Placeholder counts are computed and stored but not clearly surfaced as a teaching signal. Placeholder density is a powerful learning metric.
+
+**Status:** ✅ Addressed in SETUP-AND-DEVELOPMENT-GUIDE.md Section 7, Invariant 6
+
+**Resolution:** Documented as informational metric, not blocking. Flagged for WS-3 (guidance tone) and WS-4 (simulation confidence) integration.
+
+---
+
+### Gap 4: Acceptance Criteria Not Versioned Per Artifact
+
+**Issue:** Schema versioned as whole (`8A-1.2`), but no artifact-level evolution notes. Later criteria changes will require JSON diffing.
+
+**Status:** ✅ Addressed in SETUP-AND-DEVELOPMENT-GUIDE.md Section 7, Invariant 7
+
+**Resolution:** Recommended comment convention: `"_notes": "Risk Register criteria stabilized in Phase 8A WS-1.8"`. Lightweight metadata, zero runtime effect.
+
+---
+
+### Gap 5: Tests Prove Correctness, Not Intentional Limits
+
+**Issue:** Tests verify what system does, not what it must never do. No negative invariant tests (e.g., "validator must not auto-correct").
+
+**Status:** ✅ Acknowledged in SETUP-AND-DEVELOPMENT-GUIDE.md Section 7, Invariant 3
+
+**Resolution:** Documented need for negative tests (mutation detection). Deferred to future work (not blocking WS-2). Protects against "helpful" AI contributions.
+
+---
+
+### Gap 6: WS-1 → WS-2 Contract Implicit
+
+**Issue:** WS-2 will assume validation results are authoritative, but assumptions could drift if written by another human/AI.
+
+**Status:** ✅ Addressed in WS-1-TO-WS-2-CONTRACT.md
+
+**Resolution:** Created explicit interface contract defining:
+- What WS-2 may trust (validation results, severity, acceptance criteria)
+- What WS-2 must not reinterpret (completion %, validation logic, warning-only semantics)
+- What WS-2 must verify (risk level match, file freshness)
+- What WS-2 must preserve (teaching principle, validator immutability, single source of truth)
+- Integration patterns with valid/invalid examples
+- Testing guidance for contract compliance
+
+---
+
+### Impact of Gap Resolution
+
+**Risk Mitigation:**
+- Prevents silent divergence between diagnostic and decision layers
+- Prevents well-intentioned violations of teaching principle
+- Prevents parallel implementations from drifting over time
+- Prevents false confidence from misinterpreted validation results
+
+**Documentation Artifacts Created:**
+1. SETUP-AND-DEVELOPMENT-GUIDE.md Section 7: System Invariants (7 invariants, ~164 lines)
+2. WS-1-TO-WS-2-CONTRACT.md: Interface contract (595 lines)
+
+**Code Changes:** None required. Pure boundary definition and contract documentation.
+
+**Status:** ✅ All 6 gaps explicitly named and documented before WS-2 development begins.
+
+---
+
 ## Integration Points
 
 ### Upstream Dependencies (All Stable)
