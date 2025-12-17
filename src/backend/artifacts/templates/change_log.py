@@ -16,7 +16,13 @@ def generate(intake_request: IntakeRequest, intake_response: IntakeResponse) -> 
 
 ---
 
+<!-- VALIDATION: Change Log requirements
+     R2: Change History section with header and structure
+     R3: Change History section with header, structure, and minimum 1 entry
+-->
+
 ## Change Entries
+<!-- REQUIRED[R2,R3]: Change History - audit trail of project changes -->
 
 ### CHG-001: Initial Quality Plan
 **Date:** {today}
