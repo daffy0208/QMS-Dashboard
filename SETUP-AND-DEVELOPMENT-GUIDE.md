@@ -393,7 +393,172 @@ Adding R4+ breaks this balance. If you think you need R4, you probably need:
 
 ---
 
-## 7. Testing Strategy
+## 7. System Invariants (Explicit Contracts)
+
+These are **non-negotiable principles** that protect system integrity. Violating these invariants transforms the system from teaching to automation.
+
+### Invariant 1: Validator Diagnoses, Never Blocks
+
+**Rule:** The validator MUST NEVER block artifact generation or progression on its own.
+
+**Rationale:**
+- Blocking is a higher-order concern handled by:
+  - Dependency logic (WS-2)
+  - Lifecycle rules (WS-6)
+  - Stage transition gates
+- Validator role: **measure and report**, not **enforce and gate**
+
+**What This Means:**
+- ✅ Validator returns issues (errors, warnings, info)
+- ✅ Caller decides what to do with issues
+- ❌ Validator never throws exceptions to prevent generation
+- ❌ Validator never returns "cannot proceed" status
+
+**Future Risk:** A well-intentioned contributor might add `if not valid: raise BlockingError()`. This violates the teaching principle.
+
+---
+
+### Invariant 2: Structure ≠ Semantic Correctness
+
+**Rule:** The validator validates **structural and formal completeness only**. It does NOT assert correctness, adequacy, or truth of content.
+
+**What Validator Checks:**
+- ✅ Required sections present
+- ✅ Minimum item counts met (5 risks, 3 metrics, etc.)
+- ✅ Placeholders removed (R1+)
+- ✅ Headers and structure exist
+
+**What Validator Does NOT Check:**
+- ❌ Semantic quality ("Is this risk assessment meaningful?")
+- ❌ Logical coherence ("Do these mitigations actually address the risk?")
+- ❌ Adequacy ("Are 5 risks *enough* for this system?")
+- ❌ Truth ("Is this assumption actually true?")
+
+**Why This Matters:**
+A future AI assistant could generate *syntactically perfect but semantically hollow* content and pass validation.
+
+**Where Semantic Judgment Lives:**
+- Expert review (Phase 5)
+- Simulation engine (WS-4)
+- Guidance engine (WS-3)
+- Human interpretation (always)
+
+**Consequence:** Passing validation means "structurally ready for review", NOT "correct and sufficient".
+
+---
+
+### Invariant 3: Validator Never Mutates Input
+
+**Rule:** The validator is a **pure function**. It reads artifact content, returns diagnostic results, and **never modifies the artifact**.
+
+**What This Means:**
+- ✅ Input artifact content is immutable
+- ✅ Validator returns `ValidationResult` object only
+- ❌ Validator never inserts missing sections
+- ❌ Validator never fixes placeholders
+- ❌ Validator never "corrects" formatting
+
+**Test Coverage:** No negative tests yet enforce this (see WS-1 completion report, gap #5). Future work should add mutation detection tests.
+
+---
+
+### Invariant 4: Acceptance Criteria Are Canonical
+
+**Rule:** `acceptance_criteria.json` is the **single source of truth** for what constitutes artifact completeness.
+
+**Hierarchy:**
+```
+acceptance_criteria.json (SOURCE OF TRUTH)
+        ↓
+validator.py (IMPLEMENTS CHECKS)
+        ↓
+templates/*.py (GENERATE STRUCTURE)
+```
+
+**What This Means:**
+- ✅ All validation logic derives from acceptance_criteria.json
+- ✅ Changing criteria changes validation behavior (1:1 mapping)
+- ❌ Never add validation logic that isn't in acceptance criteria
+- ❌ Never infer missing requirements from context
+
+**Consequence:** If a requirement isn't in acceptance_criteria.json, it doesn't exist.
+
+---
+
+### Invariant 5: Teaching vs Enforcement Boundary
+
+**Rule:** R0/R1 use **warnings** (teaching mode). R2/R3 use **errors** (enforcement mode).
+
+**Implementation:**
+```python
+warning_only = risk_criteria.get("rules", {}).get("warning_only", False)
+severity = "warning" if warning_only else "error"
+```
+
+**Why This Matters:**
+- R0/R1: Users learning what quality requires → guide without blocking
+- R2/R3: Safety-critical systems → enforce completeness before review
+
+**Future Risk:** A contributor might "help" R0/R1 users by upgrading warnings to errors. This collapses teaching into enforcement and breaks the learning model.
+
+---
+
+### Invariant 6: Placeholder Count Is Informational, Not Blocking
+
+**Rule:** Placeholder detection informs users but **never blocks progression**.
+
+**Current Behavior:**
+- Validator counts placeholders (`[TBD]`, `[Name]`, etc.)
+- R0: Placeholders allowed (no error)
+- R1+: Placeholders trigger errors
+
+**Hidden Metric:**
+Placeholder density is a **teaching signal**:
+- High placeholder count = "structurally complete but conceptually early"
+- This should feed guidance tone (WS-3) and simulation confidence (WS-4)
+
+**Future Work:** Expose placeholder count as explicit metric in artifact health API.
+
+---
+
+### Invariant 7: Acceptance Criteria Versioning
+
+**Current State:** Schema versioned as a whole (`8A-1.2`).
+
+**Missing:** Artifact-level evolution notes.
+
+**Future Risk:** When criteria evolve, you'll want to say *"Risk Register v1 vs v2"* without diffing a 461-line JSON.
+
+**Recommendation (Lightweight):**
+Add comment convention inside `acceptance_criteria.json`:
+```json
+"_notes": "Risk Register criteria stabilized in Phase 8A WS-1.8"
+```
+
+Pure metadata. Zero runtime effect.
+
+---
+
+### Why These Invariants Matter
+
+**For Human Developers:**
+- Clear boundaries prevent scope creep
+- Explicit contracts reduce ambiguity
+- Future changes stay aligned with principles
+
+**For AI Assistants:**
+- Prevents "helpful" behaviors that break teaching principle
+- Makes implicit assumptions explicit
+- Reduces risk of well-intentioned misalignment
+
+**For System Evolution:**
+- WS-2 (Dependencies) can trust these invariants
+- WS-3 (Guidance) can build on these foundations
+- WS-4 (Simulation) can rely on these contracts
+
+---
+
+## 8. Testing Strategy
 
 ### Must-Pass Tests (Regression)
 
@@ -433,7 +598,7 @@ def test_new_validation():
 
 ---
 
-## 8. Common Anti-Patterns (What NOT to Do)
+## 9. Common Anti-Patterns (What NOT to Do)
 
 ### Anti-Pattern 1: "Helpful" Auto-Completion
 
@@ -519,7 +684,7 @@ def generate_verification_plan(intake_id):
 
 ---
 
-## 9. AI Assistant Quick Reference
+## 10. AI Assistant Quick Reference
 
 **If you're an AI assistant reading this file:**
 
@@ -552,7 +717,7 @@ If any answer is wrong, **don't do it.**
 
 ---
 
-## 10. Troubleshooting
+## 11. Troubleshooting
 
 ### "Validator not detecting my new rule"
 
@@ -581,7 +746,7 @@ If count is 0, content genuinely has no placeholders.
 
 ---
 
-## 11. Contribution Guidelines
+## 12. Contribution Guidelines
 
 ### Before Submitting Code
 
@@ -604,7 +769,7 @@ If count is 0, content genuinely has no placeholders.
 
 ---
 
-## 12. Contact and Support
+## 13. Contact and Support
 
 **Project Maintainer:** [To be filled]
 **Repository:** [To be filled]
