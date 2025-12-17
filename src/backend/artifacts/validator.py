@@ -41,11 +41,12 @@ class ArtifactValidator:
     Validates artifacts against acceptance criteria.
 
     Phase 8A scope:
-    - R2/R3 validation only
-    - 4 core artifacts: Quality Plan, Risk Register, Verification Plan, Control Plan
+    - R0-R3 validation (all risk levels)
+    - All 11 artifacts covered
     - Placeholder detection
     - Section presence
-    - NO cross-artifact validation
+    - Risk-specific validation (Risk Register, CTQ Tree, Measurement Plan, etc.)
+    - NO cross-artifact validation (deferred to WS-2)
     """
 
     def __init__(self, criteria_path: Optional[Path] = None):
