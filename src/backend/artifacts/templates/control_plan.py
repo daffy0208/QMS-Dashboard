@@ -16,7 +16,13 @@ def generate(intake_request: IntakeRequest, intake_response: IntakeResponse) -> 
 
 ---
 
+<!-- VALIDATION: Control Plan requirements
+     R2: Control Objectives + Operational Controls
+     R3: Control Objectives + Operational Controls + Monitoring and Review
+-->
+
 ## Change Control Process
+<!-- REQUIRED[R2,R3]: Operational Controls - controls to manage identified risks -->
 
 All changes must be:
 1. Documented

@@ -3,14 +3,21 @@
 
 **Risk Level:** R1
 **Rigor Mode:** Moderate
-**Date:** 2025-12-15
+**Date:** 2025-12-17
 **Status:** Active
 
 ---
 
+<!-- VALIDATION: Quality Plan requirements
+     R2: Purpose, Scope, Roles and Responsibilities, Quality Objectives (4 sections minimum)
+     R3: Same as R2 + Escalation and Governance (5 sections minimum)
+-->
+
 ## 1. Project Overview
+<!-- REQUIRED[R2,R3]: Purpose and Scope -->
 
 ### 1.1 Project Description
+<!-- REQUIRED[R2,R3]: Clear project purpose -->
 **Regression Test R1** is a non-regulated system that provides recommendations that influence decisions for internal users within the organization.
 
 ### 1.2 Risk Classification
@@ -32,6 +39,7 @@ R1 due to: Multi-team scale
 ---
 
 ## 2. Quality Objectives
+<!-- REQUIRED[R2,R3]: Quality goals and targets -->
 
 ### 2.1 Primary Quality Goals
 
@@ -75,8 +83,10 @@ This project requires **8 QMS artifacts** per intake-rules.md:
 ---
 
 ## 4. Roles and Responsibilities
+<!-- REQUIRED[R2,R3]: Clear role assignments and accountabilities -->
 
 **Project Owner:** [Name]
+<!-- REQUIRED[R2,R3]: Assign project owner (no [Name] placeholders) -->
 - Overall accountability for project quality
 - Approves quality plan and deviations
 - Reviews quality metrics and risks
@@ -85,6 +95,11 @@ This project requires **8 QMS artifacts** per intake-rules.md:
 - Implements system per requirements
 - Conducts peer reviews and testing
 - Documents design decisions
+
+
+<!-- REQUIRED[R3]: Escalation and Governance section needed for R3 -->
+<!-- R3 projects must document: escalation procedures, governance structure, -->
+<!-- oversight mechanisms, and decision authority boundaries -->
 
 ---
 
@@ -171,6 +186,6 @@ This Quality Plan has been reviewed and approved:
 ---
 
 **Version:** 1.0
-**Date:** 2025-12-15
+**Date:** 2025-12-17
 **Risk Level:** R1
 **Rigor Mode:** Moderate

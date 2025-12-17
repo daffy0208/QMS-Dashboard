@@ -1,9 +1,9 @@
 {
-  "review_id": "ER-20251215-ee6db5b3",
-  "intake_id": "phase5-regression",
-  "project_name": "Phase 5 Regression Test",
+  "review_id": "ER-20251217-fd1e45f8",
+  "intake_id": "immutability-test",
+  "project_name": "Immutability Regression Test",
   "requested_by": "System",
-  "request_date": "2025-12-15T19:06:51.528079",
+  "request_date": "2025-12-17T09:53:29.479961",
   "review_type": "recommended",
   "intake_answers": {
     "q1_users": "Internal",
@@ -20,10 +20,10 @@
   "review_triggers": [
     {
       "trigger_id": "ER2",
-      "description": "Regression test review",
+      "description": "Test review",
       "severity": "recommended"
     }
   ],
   "user_comment": null,
-  "status": "pending"
+  "status": "approved"
 }

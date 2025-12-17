@@ -16,7 +16,15 @@ def generate(intake_request: IntakeRequest, intake_response: IntakeResponse) -> 
 
 ---
 
+<!-- VALIDATION: Verification Plan requirements
+     R0: Test Approach section (warning only)
+     R1: Verification Strategy + Test Approach
+     R2: Verification Strategy + Test Approach
+     R3: Verification Strategy + Test Approach + Traceability to Risks
+-->
+
 ## Verification Activities
+<!-- REQUIRED[R0,R1,R2,R3]: Test Approach - how system will be verified -->
 
 ### Unit Testing
 - Coverage target: >80%

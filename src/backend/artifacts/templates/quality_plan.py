@@ -53,9 +53,16 @@ def generate(intake_request: IntakeRequest, intake_response: IntakeResponse) -> 
 
 ---
 
+<!-- VALIDATION: Quality Plan requirements
+     R2: Purpose, Scope, Roles and Responsibilities, Quality Objectives (4 sections minimum)
+     R3: Same as R2 + Escalation and Governance (5 sections minimum)
+-->
+
 ## 1. Project Overview
+<!-- REQUIRED[R2,R3]: Purpose and Scope -->
 
 ### 1.1 Project Description
+<!-- REQUIRED[R2,R3]: Clear project purpose -->
 **{project_name}** is a {'regulated' if answers.q7_regulated == 'Yes' else 'non-regulated'} system that {influence_desc} for {user_desc}.
 
 ### 1.2 Risk Classification
@@ -77,6 +84,7 @@ def generate(intake_request: IntakeRequest, intake_response: IntakeResponse) -> 
 ---
 
 ## 2. Quality Objectives
+<!-- REQUIRED[R2,R3]: Quality goals and targets -->
 
 ### 2.1 Primary Quality Goals
 
@@ -176,8 +184,10 @@ This project requires **{artifact_count} QMS artifacts** per intake-rules.md:
 ---
 
 ## 4. Roles and Responsibilities
+<!-- REQUIRED[R2,R3]: Clear role assignments and accountabilities -->
 
 **Project Owner:** [Name]
+<!-- REQUIRED[R2,R3]: Assign project owner (no [Name] placeholders) -->
 - Overall accountability for project quality
 - Approves quality plan and deviations
 - Reviews quality metrics and risks
@@ -205,7 +215,12 @@ This project requires **{artifact_count} QMS artifacts** per intake-rules.md:
 
 """
 
-    content += """---
+    content += """
+<!-- REQUIRED[R3]: Escalation and Governance section needed for R3 -->
+<!-- R3 projects must document: escalation procedures, governance structure, -->
+<!-- oversight mechanisms, and decision authority boundaries -->
+
+---
 
 ## 5. Quality Activities
 

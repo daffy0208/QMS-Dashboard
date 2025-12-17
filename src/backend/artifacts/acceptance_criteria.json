@@ -1,0 +1,460 @@
+{
+  "meta": {
+    "version": "8A-1.2",
+    "scope": "WS-1 Acceptance Criteria (R0-R3, all 11 artifacts)",
+    "last_updated": "2025-12-17"
+  },
+  "artifacts": {
+    "Quality Plan": {
+      "description": "Defines roles, responsibilities, scope, and quality objectives",
+      "risk_levels": {
+        "R0": {
+          "required_sections": [
+            "Purpose"
+          ],
+          "rules": {
+            "placeholders_allowed": true,
+            "min_sections_present": 1,
+            "warning_only": true
+          }
+        },
+        "R1": {
+          "required_sections": [
+            "Purpose",
+            "Scope",
+            "Quality Objectives"
+          ],
+          "rules": {
+            "placeholders_not_allowed": true,
+            "min_sections_present": 3
+          }
+        },
+        "R2": {
+          "required_sections": [
+            "Purpose",
+            "Scope",
+            "Roles and Responsibilities",
+            "Quality Objectives"
+          ],
+          "rules": {
+            "placeholders_not_allowed": true,
+            "min_sections_present": 4
+          }
+        },
+        "R3": {
+          "required_sections": [
+            "Purpose",
+            "Scope",
+            "Roles and Responsibilities",
+            "Quality Objectives",
+            "Escalation and Governance"
+          ],
+          "rules": {
+            "placeholders_not_allowed": true,
+            "min_sections_present": 5
+          }
+        }
+      }
+    },
+
+    "Risk Register": {
+      "description": "Identifies, assesses, and mitigates risks",
+      "risk_levels": {
+        "R0": {
+          "rules": {
+            "min_risks": 1,
+            "required_fields": [
+              "description"
+            ],
+            "placeholders_allowed": true,
+            "warning_only": true
+          }
+        },
+        "R1": {
+          "rules": {
+            "min_risks": 2,
+            "required_fields": [
+              "id",
+              "description",
+              "mitigation"
+            ],
+            "placeholders_not_allowed": true
+          }
+        },
+        "R2": {
+          "rules": {
+            "min_risks": 3,
+            "required_fields": [
+              "id",
+              "description",
+              "likelihood",
+              "impact",
+              "mitigation",
+              "owner"
+            ],
+            "placeholders_not_allowed": true
+          }
+        },
+        "R3": {
+          "rules": {
+            "min_risks": 5,
+            "required_fields": [
+              "id",
+              "description",
+              "likelihood",
+              "impact",
+              "mitigation",
+              "owner"
+            ],
+            "placeholders_not_allowed": true
+          }
+        }
+      }
+    },
+
+    "Verification Plan": {
+      "description": "Defines how requirements and risks are verified",
+      "risk_levels": {
+        "R0": {
+          "required_sections": [
+            "Test Approach"
+          ],
+          "rules": {
+            "placeholders_allowed": true,
+            "warning_only": true
+          }
+        },
+        "R1": {
+          "required_sections": [
+            "Verification Strategy",
+            "Test Approach"
+          ],
+          "rules": {
+            "placeholders_not_allowed": true
+          }
+        },
+        "R2": {
+          "required_sections": [
+            "Verification Strategy",
+            "Test Approach"
+          ],
+          "rules": {
+            "placeholders_not_allowed": true
+          }
+        },
+        "R3": {
+          "required_sections": [
+            "Verification Strategy",
+            "Test Approach",
+            "Traceability to Risks"
+          ],
+          "rules": {
+            "placeholders_not_allowed": true
+          }
+        }
+      }
+    },
+
+    "Control Plan": {
+      "description": "Defines controls to manage identified risks",
+      "risk_levels": {
+        "R2": {
+          "required_sections": [
+            "Control Objectives",
+            "Operational Controls"
+          ],
+          "rules": {
+            "placeholders_not_allowed": true
+          }
+        },
+        "R3": {
+          "required_sections": [
+            "Control Objectives",
+            "Operational Controls",
+            "Monitoring and Review"
+          ],
+          "rules": {
+            "placeholders_not_allowed": true
+          }
+        }
+      }
+    },
+
+    "CTQ Tree": {
+      "description": "Critical-to-Quality tree mapping user needs to measurable requirements",
+      "risk_levels": {
+        "R0": {
+          "required_sections": [
+            "User Needs"
+          ],
+          "rules": {
+            "placeholders_allowed": true,
+            "warning_only": true,
+            "min_items": 1
+          }
+        },
+        "R1": {
+          "required_sections": [
+            "User Needs",
+            "Quality Drivers"
+          ],
+          "rules": {
+            "placeholders_not_allowed": true,
+            "min_items": 2
+          }
+        },
+        "R2": {
+          "required_sections": [
+            "User Needs",
+            "Quality Drivers",
+            "Measurable Requirements"
+          ],
+          "rules": {
+            "placeholders_not_allowed": true,
+            "min_items": 3
+          }
+        },
+        "R3": {
+          "required_sections": [
+            "User Needs",
+            "Quality Drivers",
+            "Measurable Requirements",
+            "Traceability"
+          ],
+          "rules": {
+            "placeholders_not_allowed": true,
+            "min_items": 5
+          }
+        }
+      }
+    },
+
+    "Validation Plan": {
+      "description": "Validation strategy ensuring system solves intended user problems",
+      "risk_levels": {
+        "R0": {
+          "required_sections": [
+            "Validation Approach"
+          ],
+          "rules": {
+            "placeholders_allowed": true,
+            "warning_only": true
+          }
+        },
+        "R1": {
+          "required_sections": [
+            "Validation Approach",
+            "User Scenarios"
+          ],
+          "rules": {
+            "placeholders_not_allowed": true
+          }
+        },
+        "R2": {
+          "required_sections": [
+            "Validation Approach",
+            "User Scenarios",
+            "Acceptance Criteria"
+          ],
+          "rules": {
+            "placeholders_not_allowed": true
+          }
+        },
+        "R3": {
+          "required_sections": [
+            "Validation Approach",
+            "User Scenarios",
+            "Acceptance Criteria",
+            "Validation Report"
+          ],
+          "rules": {
+            "placeholders_not_allowed": true
+          }
+        }
+      }
+    },
+
+    "Measurement Plan": {
+      "description": "Metrics for monitoring system quality and performance",
+      "risk_levels": {
+        "R0": {
+          "required_sections": [
+            "Key Metrics"
+          ],
+          "rules": {
+            "placeholders_allowed": true,
+            "warning_only": true,
+            "min_metrics": 1
+          }
+        },
+        "R1": {
+          "required_sections": [
+            "Key Metrics",
+            "Measurement Approach"
+          ],
+          "rules": {
+            "placeholders_not_allowed": true,
+            "min_metrics": 2
+          }
+        },
+        "R2": {
+          "required_sections": [
+            "Key Metrics",
+            "Measurement Approach",
+            "Targets"
+          ],
+          "rules": {
+            "placeholders_not_allowed": true,
+            "min_metrics": 3
+          }
+        },
+        "R3": {
+          "required_sections": [
+            "Key Metrics",
+            "Measurement Approach",
+            "Targets",
+            "Monitoring Frequency"
+          ],
+          "rules": {
+            "placeholders_not_allowed": true,
+            "min_metrics": 5
+          }
+        }
+      }
+    },
+
+    "Assumptions Register": {
+      "description": "Critical assumptions that if wrong would invalidate project approach",
+      "risk_levels": {
+        "R0": {
+          "rules": {
+            "min_content_length": 100,
+            "warning_only": true
+          }
+        },
+        "R1": {
+          "required_sections": [
+            "Critical Assumptions"
+          ],
+          "rules": {
+            "min_assumptions": 1,
+            "placeholders_not_allowed": true
+          }
+        },
+        "R2": {
+          "required_sections": [
+            "Critical Assumptions",
+            "Validation Status"
+          ],
+          "rules": {
+            "min_assumptions": 3,
+            "placeholders_not_allowed": true
+          }
+        },
+        "R3": {
+          "required_sections": [
+            "Critical Assumptions",
+            "Validation Status",
+            "Risk if Wrong"
+          ],
+          "rules": {
+            "min_assumptions": 5,
+            "placeholders_not_allowed": true
+          }
+        }
+      }
+    },
+
+    "Traceability Index": {
+      "description": "Traceability matrix linking requirements to verification",
+      "risk_levels": {
+        "R0": {
+          "rules": {
+            "min_content_length": 100,
+            "warning_only": true
+          }
+        },
+        "R1": {
+          "required_sections": [
+            "Traceability Matrix"
+          ],
+          "rules": {
+            "min_entries": 3,
+            "placeholders_not_allowed": true
+          }
+        },
+        "R2": {
+          "required_sections": [
+            "Traceability Matrix",
+            "Coverage Analysis"
+          ],
+          "rules": {
+            "min_entries": 5,
+            "placeholders_not_allowed": true
+          }
+        },
+        "R3": {
+          "required_sections": [
+            "Traceability Matrix",
+            "Coverage Analysis",
+            "Gap Analysis"
+          ],
+          "rules": {
+            "min_entries": 10,
+            "placeholders_not_allowed": true
+          }
+        }
+      }
+    },
+
+    "Change Log": {
+      "description": "Audit trail of project changes with rationale",
+      "risk_levels": {
+        "R2": {
+          "required_sections": [
+            "Change History"
+          ],
+          "rules": {
+            "has_header": true,
+            "has_structure": true
+          }
+        },
+        "R3": {
+          "required_sections": [
+            "Change History"
+          ],
+          "rules": {
+            "has_header": true,
+            "has_structure": true,
+            "min_entries": 1
+          }
+        }
+      }
+    },
+
+    "CAPA Log": {
+      "description": "Corrective and Preventive Action log for continuous improvement",
+      "risk_levels": {
+        "R2": {
+          "required_sections": [
+            "CAPA Entries"
+          ],
+          "rules": {
+            "has_header": true,
+            "has_structure": true
+          }
+        },
+        "R3": {
+          "required_sections": [
+            "CAPA Entries"
+          ],
+          "rules": {
+            "has_header": true,
+            "has_structure": true,
+            "min_entries": 1
+          }
+        }
+      }
+    }
+  }
+}

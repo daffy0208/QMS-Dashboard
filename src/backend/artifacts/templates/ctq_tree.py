@@ -21,7 +21,15 @@ def generate(intake_request: IntakeRequest, intake_response: IntakeResponse) -> 
 
 ---
 
+<!-- VALIDATION: CTQ Tree requirements
+     R0: User Needs section (1 item minimum)
+     R1: User Needs + Quality Drivers (2 items minimum)
+     R2: User Needs + Quality Drivers + Measurable Requirements (3 items)
+     R3: Full tree with Traceability (5 items minimum)
+-->
+
 ## Critical to Quality Characteristics
+<!-- REQUIRED[R0,R1,R2,R3]: User Needs - what users need from system -->
 
 ### CTQ-1: Classification Accuracy
 **Requirement:** Risk level must match intake responses per intake-rules.md
