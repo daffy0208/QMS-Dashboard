@@ -1,8 +1,8 @@
 # CTQ Tree
-## Regression Test R0
+## WS1-Test-AI-Dashboard
 
-**Risk Level:** R0
-**Date:** 2025-12-17
+**Risk Level:** R3
+**Date:** 2025-12-16
 **Status:** First-pass
 
 ---
@@ -13,6 +13,12 @@
 **Requirement:** Risk level must match intake responses per intake-rules.md
 **Measurement:** Classification correctness
 **Target:** 100%
+**Priority:** Critical
+
+### CTQ-4: Financial Accuracy
+**Requirement:** All financial calculations accurate
+**Measurement:** Financial error rate
+**Target:** 0%
 **Priority:** Critical
 
 ### CTQ-5: Usability

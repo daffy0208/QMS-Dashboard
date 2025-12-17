@@ -1,9 +1,9 @@
 # Quality Plan
-## Regression Test R1
+## WS1-Test-AI-Dashboard
 
-**Risk Level:** R1
-**Rigor Mode:** Moderate
-**Date:** 2025-12-17
+**Risk Level:** R3
+**Rigor Mode:** Maximum
+**Date:** 2025-12-16
 **Status:** Active
 
 ---
@@ -18,22 +18,22 @@
 
 ### 1.1 Project Description
 <!-- REQUIRED[R2,R3]: Clear project purpose -->
-**Regression Test R1** is a non-regulated system that provides recommendations that influence decisions for internal users within the organization.
+**WS1-Test-AI-Dashboard** is a non-regulated system that provides recommendations that influence decisions for external clients, partners, or vendors.
 
 ### 1.2 Risk Classification
 
-**Risk Level:** R1 (Moderate Rigor)
+**Risk Level:** R3 (Maximum Rigor)
 
 **Classification Rationale:**
-R1 due to: Multi-team scale
+R3 due to: Hard to reverse consequences
 
 **Key Risk Factors:**
-- **Users:** Internal (internal users within the organization)
+- **Users:** External (external clients, partners, or vendors)
 - **System Influence:** Recommendations (provides recommendations that influence decisions)
-- **Worst Credible Failure:** Annoyance (minor inconvenience or annoyance)
-- **Reversibility:** Easy
-- **Domain Understanding:** Partially
-- **Scale:** Multi_team
+- **Worst Credible Failure:** Financial (financial loss)
+- **Reversibility:** Hard
+- **Domain Understanding:** Yes
+- **Scale:** Team
 - **Regulatory Status:** No
 
 ---
@@ -42,6 +42,11 @@ R1 due to: Multi-team scale
 <!-- REQUIRED[R2,R3]: Quality goals and targets -->
 
 ### 2.1 Primary Quality Goals
+
+3. **Financial Accuracy:**
+   - Ensure all financial calculations are accurate
+   - Prevent financial losses through robust testing
+   - Implement transaction logging and audit trails
 
 4. **Risk Management:**
    - Identify and mitigate project risks proactively
@@ -59,15 +64,17 @@ R1 due to: Multi-team scale
 
 ### 3.1 Rigor Level: {rigor}
 
-**R1 (Moderate Rigor):**
-- Conditional quality activities based on project needs
-- Moderate documentation requirements
-- Comprehensive testing required
-- Risk-based approach to verification and validation
+**R3 (Maximum Rigor):**
+- **MAXIMUM quality activities - no downgrade permitted**
+- Complete documentation required for all activities
+- Full V&V mandatory with traceability
+- Change control, CAPA, and configuration management required
+- Expert review mandatory for all critical decisions
+- No artifact may be skipped without formal deviation approval
 
 ### 3.2 Required QMS Artifacts
 
-This project requires **8 QMS artifacts** per intake-rules.md:
+This project requires **11 QMS artifacts** per intake-rules.md:
 
 1. Quality Plan
 2. CTQ Tree
@@ -77,6 +84,9 @@ This project requires **8 QMS artifacts** per intake-rules.md:
 6. Verification Plan
 7. Validation Plan
 8. Measurement Plan
+9. Control Plan
+10. Change Log
+11. CAPA Log
 
 **Status Tracking:** All artifacts must have explicit status (Done/Deferred/Deviated). No silent skipping permitted.
 
@@ -96,6 +106,11 @@ This project requires **8 QMS artifacts** per intake-rules.md:
 - Conducts peer reviews and testing
 - Documents design decisions
 
+**Quality Expert:** [Name]
+- Reviews risk classification
+- Approves deviations from quality plan
+- Conducts independent quality audits
+
 
 <!-- REQUIRED[R3]: Escalation and Governance section needed for R3 -->
 <!-- R3 projects must document: escalation procedures, governance structure, -->
@@ -111,23 +126,26 @@ This project requires **8 QMS artifacts** per intake-rules.md:
 - Review requirements for completeness and clarity
 
 ### 5.2 Design Review
-- Design reviews recommended for complex features
+- **Mandatory design reviews** before implementation
 - Document design decisions and rationale
 - Review for security, safety, and performance
 
 ### 5.3 Code Quality
 - Peer code reviews for all changes
+- Static analysis and linting enforced
 - Coding standards adherence
 - Documentation of complex logic
 
 ### 5.4 Testing & Verification
-- Unit testing required for critical paths
-- Integration testing required
-- Manual testing acceptable
+- **Comprehensive unit testing required**
+- **Integration testing required**
+- **System testing required**
+- **Regression testing for all changes**
 
 ### 5.5 Validation
 - User acceptance testing with real users
 - Validation that system solves intended problems
+- **Formal validation report required**
 
 ---
 
@@ -151,16 +169,14 @@ This project requires **8 QMS artifacts** per intake-rules.md:
 2. **Design Review** - Design approved and documented
 3. **Implementation Complete** - Code complete, reviewed, tested
 4. **Verification Complete** - All tests passing, defects resolved
+5. **Validation Complete** - User acceptance achieved
+6. **Release Approval** - All quality criteria met
 
 **No quality gate may be skipped without deviation approval.**
 
 ---
 
 ## 8. Risk Summary
-
-**Domain Uncertainty:**
-- Domain is not fully understood - additional research and validation required
-- Assumptions must be validated through testing and expert review
 
 See Risk Register (QMS-Risk-Register.md) for complete risk analysis.
 
@@ -183,9 +199,11 @@ This Quality Plan has been reviewed and approved:
 
 **Project Owner:** _____________________________  Date: __________
 
+**Quality Expert:** _____________________________  Date: __________
+
 ---
 
 **Version:** 1.0
-**Date:** 2025-12-17
-**Risk Level:** R1
-**Rigor Mode:** Moderate
+**Date:** 2025-12-16
+**Risk Level:** R3
+**Rigor Mode:** Maximum

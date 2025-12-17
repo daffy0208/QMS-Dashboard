@@ -2,7 +2,7 @@
 ## Regression Test R1
 
 **Risk Level:** R1
-**Date:** 2025-12-15
+**Date:** 2025-12-17
 **Status:** First-pass
 
 ---

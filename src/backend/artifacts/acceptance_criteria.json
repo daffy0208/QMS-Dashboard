@@ -1,13 +1,34 @@
 {
   "meta": {
-    "version": "8A-1.0",
-    "scope": "WS-1 Acceptance Criteria (R2/R3 only)",
-    "last_updated": "2025-12-15"
+    "version": "8A-1.1",
+    "scope": "WS-1 Acceptance Criteria (R0-R3, 4 core artifacts)",
+    "last_updated": "2025-12-16"
   },
   "artifacts": {
     "Quality Plan": {
       "description": "Defines roles, responsibilities, scope, and quality objectives",
       "risk_levels": {
+        "R0": {
+          "required_sections": [
+            "Purpose"
+          ],
+          "rules": {
+            "placeholders_allowed": true,
+            "min_sections_present": 1,
+            "warning_only": true
+          }
+        },
+        "R1": {
+          "required_sections": [
+            "Purpose",
+            "Scope",
+            "Quality Objectives"
+          ],
+          "rules": {
+            "placeholders_not_allowed": true,
+            "min_sections_present": 3
+          }
+        },
         "R2": {
           "required_sections": [
             "Purpose",
@@ -39,6 +60,27 @@
     "Risk Register": {
       "description": "Identifies, assesses, and mitigates risks",
       "risk_levels": {
+        "R0": {
+          "rules": {
+            "min_risks": 1,
+            "required_fields": [
+              "description"
+            ],
+            "placeholders_allowed": true,
+            "warning_only": true
+          }
+        },
+        "R1": {
+          "rules": {
+            "min_risks": 2,
+            "required_fields": [
+              "id",
+              "description",
+              "mitigation"
+            ],
+            "placeholders_not_allowed": true
+          }
+        },
         "R2": {
           "rules": {
             "min_risks": 3,
@@ -73,6 +115,24 @@
     "Verification Plan": {
       "description": "Defines how requirements and risks are verified",
       "risk_levels": {
+        "R0": {
+          "required_sections": [
+            "Test Approach"
+          ],
+          "rules": {
+            "placeholders_allowed": true,
+            "warning_only": true
+          }
+        },
+        "R1": {
+          "required_sections": [
+            "Verification Strategy",
+            "Test Approach"
+          ],
+          "rules": {
+            "placeholders_not_allowed": true
+          }
+        },
         "R2": {
           "required_sections": [
             "Verification Strategy",

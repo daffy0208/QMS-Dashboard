@@ -1,8 +1,8 @@
 # Assumptions Register
-## Regression Test R1
+## WS1-Test-AI-Dashboard
 
-**Risk Level:** R1
-**Date:** 2025-12-17
+**Risk Level:** R3
+**Date:** 2025-12-16
 **Status:** First-pass
 
 ---

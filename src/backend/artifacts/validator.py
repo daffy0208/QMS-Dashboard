@@ -128,13 +128,25 @@ class ArtifactValidator:
         risk_criteria = artifact_criteria["risk_levels"][risk_level]
         issues: List[ValidationIssue] = []
 
+        # WS-1.7: Check if warning-only mode (R0/R1 teaching-oriented validation)
+        warning_only = risk_criteria.get("rules", {}).get("warning_only", False)
+
         # 1. Check for placeholders
-        placeholder_count = 0
-        if risk_criteria.get("rules", {}).get("placeholders_not_allowed", False):
-            placeholder_count = len(self.placeholder_regex.findall(content))
+        rules = risk_criteria.get("rules", {})
+
+        # WS-1.7: Always count placeholders (for informational purposes)
+        placeholder_count = len(self.placeholder_regex.findall(content))
+
+        # WS-1.7: Check placeholders (handle both placeholders_not_allowed and placeholders_allowed)
+        placeholders_not_allowed = rules.get("placeholders_not_allowed", False)
+        placeholders_allowed = rules.get("placeholders_allowed", False)
+
+        # If placeholders explicitly NOT allowed, raise an issue
+        if placeholders_not_allowed and not placeholders_allowed:
             if placeholder_count > 0:
+                severity = "warning" if warning_only else "error"
                 issues.append(ValidationIssue(
-                    severity="error",
+                    severity=severity,
                     section=None,
                     message=f"Found {placeholder_count} placeholder(s) that must be filled in",
                     suggestion="Replace all [bracketed], TBD, and TODO placeholders with actual content"
@@ -146,8 +158,9 @@ class ArtifactValidator:
             for section in risk_criteria["required_sections"]:
                 if not self._section_exists(content, section):
                     missing_sections.append(section)
+                    severity = "warning" if warning_only else "error"
                     issues.append(ValidationIssue(
-                        severity="error",
+                        severity=severity,
                         section=section,
                         message=f"Required section '{section}' is missing or empty",
                         suggestion=f"Add a '{section}' section with appropriate content"
@@ -158,8 +171,9 @@ class ArtifactValidator:
         if min_sections:
             section_count = self._count_sections(content)
             if section_count < min_sections:
+                severity = "warning" if warning_only else "error"
                 issues.append(ValidationIssue(
-                    severity="error",
+                    severity=severity,
                     section=None,
                     message=f"Expected at least {min_sections} sections, found {section_count}",
                     suggestion="Add more detailed sections to meet minimum requirements"
@@ -167,7 +181,7 @@ class ArtifactValidator:
 
         # 4. Artifact-specific validation
         if artifact_name == "Risk Register":
-            risk_issues = self._validate_risk_register(content, risk_criteria)
+            risk_issues = self._validate_risk_register(content, risk_criteria, warning_only)
             issues.extend(risk_issues)
 
         # Calculate completion percentage
@@ -231,7 +245,8 @@ class ArtifactValidator:
     def _validate_risk_register(
         self,
         content: str,
-        risk_criteria: Dict
+        risk_criteria: Dict,
+        warning_only: bool = False
     ) -> List[ValidationIssue]:
         """
         Validate Risk Register structure.
@@ -251,8 +266,9 @@ class ArtifactValidator:
         # Check minimum risks
         min_risks = rules.get("min_risks", 0)
         if num_risks < min_risks:
+            severity = "warning" if warning_only else "error"
             issues.append(ValidationIssue(
-                severity="error",
+                severity=severity,
                 section="Risks",
                 message=f"Expected at least {min_risks} risks, found {num_risks}",
                 suggestion=f"Add {min_risks - num_risks} more risk(s) to meet requirements"

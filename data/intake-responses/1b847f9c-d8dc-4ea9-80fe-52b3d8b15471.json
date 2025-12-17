@@ -1,0 +1,49 @@
+{
+  "intake_id": "1b847f9c-d8dc-4ea9-80fe-52b3d8b15471",
+  "project_name": "WS1-Test-AI-Dashboard",
+  "timestamp": "2025-12-16T22:45:02.508612",
+  "answers": {
+    "q1_users": "External",
+    "q2_influence": "Recommendations",
+    "q3_worst_failure": "Financial",
+    "q4_reversibility": "Hard",
+    "q5_domain": "Yes",
+    "q6_scale": "Team",
+    "q7_regulated": "No"
+  },
+  "classification": {
+    "risk_level": "R3",
+    "rigor": "Maximum",
+    "rationale": "R3 due to: Hard to reverse consequences",
+    "borderline": false
+  },
+  "warnings": [
+    {
+      "severity": "CRITICAL",
+      "layer": "W1",
+      "message": "R3 CLASSIFICATION - STRICT RIGOR MODE: This is the highest risk level requiring 11 mandatory quality artifacts, full V&V, and no downgrades without deviation approval",
+      "recommendation": "Confirm you understand R3 requirements before proceeding. Expert review recommended."
+    }
+  ],
+  "expert_review_required": false,
+  "expert_review_recommended": false,
+  "next_steps": [
+    "Review your risk classification: R3 (Maximum rigor)",
+    "Review all warnings and recommendations above",
+    "Generate 11 required QMS artifacts: Quality Plan, CTQ Tree, Assumptions Register...",
+    "Review and approve quality plan before implementation begins"
+  ],
+  "artifacts_required": [
+    "Quality Plan",
+    "CTQ Tree",
+    "Assumptions Register",
+    "Risk Register",
+    "Traceability Index",
+    "Verification Plan",
+    "Validation Plan",
+    "Measurement Plan",
+    "Control Plan",
+    "Change Log",
+    "CAPA Log"
+  ]
+}
