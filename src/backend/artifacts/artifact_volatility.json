@@ -1,0 +1,75 @@
+{
+  "meta": {
+    "version": "1.0",
+    "workstream": "WS-2",
+    "dark_matter_patch": "#1",
+    "last_updated": "2025-12-17",
+    "description": "Artifact volatility classes - determines readiness threshold modifiers"
+  },
+  "volatility_classes": {
+    "draft_friendly": {
+      "modifier": -0.1,
+      "description": "Cheap to iterate; early generation helps identify gaps",
+      "artifacts": [
+        "Verification Plan",
+        "Validation Plan",
+        "Assumptions Register"
+      ]
+    },
+    "foundation": {
+      "modifier": 0.0,
+      "description": "Critical stability; downstream artifacts depend heavily",
+      "artifacts": [
+        "Risk Register",
+        "CTQ Tree",
+        "Quality Plan"
+      ]
+    },
+    "rework_costly": {
+      "modifier": 0.1,
+      "description": "Expensive to rebuild if upstream changes; wait for stable prerequisites",
+      "artifacts": [
+        "Traceability Index",
+        "Control Plan"
+      ]
+    },
+    "lightweight": {
+      "modifier": -0.05,
+      "description": "Simple artifacts with low rework cost",
+      "artifacts": [
+        "Measurement Plan",
+        "Change Log",
+        "CAPA Log"
+      ]
+    }
+  },
+  "artifact_lookup": {
+    "Quality Plan": "foundation",
+    "CTQ Tree": "foundation",
+    "Risk Register": "foundation",
+    "Verification Plan": "draft_friendly",
+    "Validation Plan": "draft_friendly",
+    "Measurement Plan": "lightweight",
+    "Control Plan": "rework_costly",
+    "Traceability Index": "rework_costly",
+    "Assumptions Register": "draft_friendly",
+    "Change Log": "lightweight",
+    "CAPA Log": "lightweight"
+  },
+  "examples": {
+    "R2_verification_plan": {
+      "base_threshold": 0.8,
+      "volatility_class": "draft_friendly",
+      "modifier": -0.1,
+      "effective_threshold": 0.7,
+      "rationale": "Verification Plan is cheap to draft early; helps users identify Risk Register gaps"
+    },
+    "R2_traceability_index": {
+      "base_threshold": 0.8,
+      "volatility_class": "rework_costly",
+      "modifier": 0.1,
+      "effective_threshold": 0.9,
+      "rationale": "Traceability Index expensive to rebuild; wait until CTQ/Risk/Verification stable"
+    }
+  }
+}

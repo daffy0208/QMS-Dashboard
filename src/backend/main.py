@@ -54,6 +54,13 @@ from artifacts.validator import (
     ValidationIssue,
     validate_project_artifacts
 )
+# Phase 8A WS-2: Dependency management
+from artifacts.dependency_manager import (
+    DependencyManager,
+    ReadinessAssessment,
+    DependencyStatus,
+    NextActionRecommendation
+)
 from validation.classifier import classify_risk, get_required_artifacts
 from validation.layer1 import validate_intake_answers, validate_project_name
 from validation.layer2 import cross_validate
@@ -141,6 +148,76 @@ class ProjectArtifactHealth(BaseModel):
     artifacts_path: Optional[str] = Field(
         default=None,
         description="Filesystem path to artifacts (if available)"
+    )
+
+
+# ============================================================================
+# Phase 8A WS-2: Dependency Management Response Models
+# ============================================================================
+
+class ProjectDependencyHealth(BaseModel):
+    """
+    Dependency health status for all artifacts in a project.
+
+    Response contract - What WS-2 promises:
+    1. Shows which artifacts are ready/blocked (diagnostic)
+    2. Explains dependency relationships (teaching-oriented)
+    3. Recommends (NOT commands) next actions
+    4. NEVER blocks progression (soft blocking only)
+
+    Messaging discipline - What WS-2 does NOT do:
+    - Does NOT auto-generate missing artifacts
+    - Does NOT auto-complete incomplete artifacts
+    - Does NOT hard-block based on dependencies
+    - Does NOT judge semantic quality (structural only)
+    """
+    intake_id: str = Field(description="Intake ID")
+    project_name: str = Field(description="Project name")
+    risk_level: str = Field(description="Project risk level (R0-R3)")
+
+    dependencies: Dict[str, DependencyStatus] = Field(
+        description="Dependency status per artifact (keyed by artifact name)"
+    )
+
+    cross_reference_issues: Dict[str, List[str]] = Field(
+        description="Cross-artifact reference consistency issues (structural checks only)"
+    )
+
+    overall_ready: bool = Field(
+        description="True if all required artifacts meet readiness thresholds"
+    )
+
+    blocking_count: int = Field(
+        description="Number of artifacts blocked by dependencies"
+    )
+
+
+class NextActionsResponse(BaseModel):
+    """
+    Next action recommendations for user.
+
+    Response contract - Recommendations, NOT commands:
+    1. Suggests what to work on next (teaching-oriented)
+    2. Explains reasoning (transparency)
+    3. Shows what would be unblocked (context)
+    4. NEVER prescribes or enforces (user agency preserved)
+
+    Messaging discipline:
+    - "Consider completing X" NOT "You must complete X"
+    - "This would unblock Y" NOT "You cannot do Y until X"
+    - Teaching tone throughout
+    """
+    intake_id: str = Field(description="Intake ID")
+    project_name: str = Field(description="Project name")
+    risk_level: str = Field(description="Project risk level (R0-R3)")
+
+    recommendations: List[NextActionRecommendation] = Field(
+        description="Ordered list of recommended actions (high priority first)"
+    )
+
+    can_proceed_anyway: bool = Field(
+        default=True,
+        description="User can always proceed despite recommendations (per WS-2 soft blocking)"
     )
 
 
@@ -929,6 +1006,196 @@ async def get_artifact_health(intake_id: str):
     )
 
     return health
+
+
+@app.get("/api/intake/{intake_id}/dependency-health", response_model=ProjectDependencyHealth)
+async def get_dependency_health(intake_id: str):
+    """
+    Get dependency health status for all artifacts in a project.
+
+    Phase 8A WS-2: Dependency Management & Smart Next Steps
+
+    Returns:
+        ProjectDependencyHealth with per-artifact dependency status
+
+    Contract:
+        - Reports dependency readiness (diagnostic)
+        - Explains blocking relationships (teaching-oriented)
+        - Checks cross-artifact consistency (structural only)
+        - NEVER blocks artifact generation (soft blocking only)
+
+    Messaging discipline:
+        This endpoint is DIAGNOSTIC + GUIDANCE. It does:
+        - Show which artifacts are blocked by dependencies
+        - Recommend completing prerequisites
+        - Explain dependency relationships
+        But it does NOT:
+        - Auto-generate missing artifacts (non-goal #1)
+        - Auto-complete incomplete artifacts (non-goal #2)
+        - Hard-block generation (non-goal #3)
+        - Judge semantic quality (non-goal #6)
+    """
+    # Validate intake ID format
+    if not validate_intake_id(intake_id):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid intake ID format"
+        )
+
+    # Load intake response
+    file_path = DATA_DIR / f"{intake_id}.json"
+    if not file_path.exists():
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Intake {intake_id} not found"
+        )
+
+    with open(file_path, 'r') as f:
+        intake_data = json.load(f)
+
+    intake_response = IntakeResponse(**intake_data)
+    project_name = intake_response.project_name
+    risk_level = intake_response.classification.risk_level
+
+    # Check if artifacts exist
+    artifacts_dir = config.get_artifacts_path(intake_id)
+    if not artifacts_dir.exists():
+        # Artifacts not generated yet - return empty dependency status
+        return ProjectDependencyHealth(
+            intake_id=intake_id,
+            project_name=project_name,
+            risk_level=risk_level,
+            dependencies={},
+            cross_reference_issues={},
+            overall_ready=False,
+            blocking_count=0
+        )
+
+    # Get required artifacts for this risk level
+    required_artifacts = get_required_artifacts(risk_level)
+
+    # Initialize dependency manager
+    dep_manager = DependencyManager()
+
+    # Check dependencies for each artifact
+    dependency_statuses = {}
+    for artifact_name in required_artifacts:
+        status = dep_manager.check_dependencies(artifact_name, artifacts_dir, risk_level)
+        dependency_statuses[artifact_name] = status
+
+    # Check cross-references (WS-2 structural validation)
+    cross_ref_issues = dep_manager.check_cross_references(artifacts_dir, risk_level)
+
+    # Calculate aggregate stats
+    blocking_count = sum(
+        1 for status in dependency_statuses.values()
+        if not status.all_dependencies_ready
+    )
+
+    overall_ready = all(
+        status.readiness.ready
+        for status in dependency_statuses.values()
+    )
+
+    return ProjectDependencyHealth(
+        intake_id=intake_id,
+        project_name=project_name,
+        risk_level=risk_level,
+        dependencies=dependency_statuses,
+        cross_reference_issues=cross_ref_issues,
+        overall_ready=overall_ready,
+        blocking_count=blocking_count
+    )
+
+
+@app.get("/api/intake/{intake_id}/next-actions", response_model=NextActionsResponse)
+async def get_next_actions(intake_id: str):
+    """
+    Get recommended next actions for user.
+
+    Phase 8A WS-2: Smart Next Steps
+
+    Returns:
+        NextActionsResponse with ordered recommendations
+
+    Contract:
+        - Recommends what to work on next (teaching-oriented)
+        - Prioritizes based on dependency blocking
+        - Explains reasoning transparently
+        - NEVER commands or enforces (user agency preserved)
+
+    Messaging discipline:
+        This endpoint RECOMMENDS, does NOT command. It:
+        - Suggests "Consider completing X"
+        - Explains "This would unblock Y"
+        - Uses teaching-oriented language
+        But it does NOT:
+        - Say "You must complete X" (prescriptive language, non-goal #4)
+        - Auto-trigger generation (non-goal #1)
+        - Block user choices (non-goal #3)
+    """
+    # Validate intake ID format
+    if not validate_intake_id(intake_id):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid intake ID format"
+        )
+
+    # Load intake response
+    file_path = DATA_DIR / f"{intake_id}.json"
+    if not file_path.exists():
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Intake {intake_id} not found"
+        )
+
+    with open(file_path, 'r') as f:
+        intake_data = json.load(f)
+
+    intake_response = IntakeResponse(**intake_data)
+    project_name = intake_response.project_name
+    risk_level = intake_response.classification.risk_level
+
+    # Check if artifacts exist
+    artifacts_dir = config.get_artifacts_path(intake_id)
+    if not artifacts_dir.exists():
+        # Artifacts not generated yet
+        return NextActionsResponse(
+            intake_id=intake_id,
+            project_name=project_name,
+            risk_level=risk_level,
+            recommendations=[
+                NextActionRecommendation(
+                    action="Generate all required artifacts",
+                    artifact_name="All",
+                    priority="high",
+                    reason="Artifacts not yet generated",
+                    unblocks=[]
+                )
+            ],
+            can_proceed_anyway=True
+        )
+
+    # Get required artifacts for this risk level
+    required_artifacts = get_required_artifacts(risk_level)
+
+    # Initialize dependency manager
+    dep_manager = DependencyManager()
+
+    # Get next action recommendations
+    recommendations = dep_manager.get_next_actions(
+        artifacts_dir,
+        risk_level,
+        required_artifacts
+    )
+
+    return NextActionsResponse(
+        intake_id=intake_id,
+        project_name=project_name,
+        risk_level=risk_level,
+        recommendations=recommendations,
+        can_proceed_anyway=True
+    )
 
 
 # ============================================================================

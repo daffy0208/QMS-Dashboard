@@ -1,0 +1,58 @@
+{
+  "meta": {
+    "version": "1.0",
+    "workstream": "WS-2",
+    "dark_matter_patch": "#7",
+    "last_updated": "2025-12-17",
+    "description": "Versioned readiness thresholds with calibration policy"
+  },
+  "version": "1.0",
+  "rationale": "Initial thresholds based on teaching principle (R0/R1 lenient, R2/R3 strict)",
+  "risk_levels": {
+    "R0": {
+      "completion": 0.5,
+      "max_errors": 3,
+      "max_warnings": null,
+      "notes": "Learning mode: exploration allowed"
+    },
+    "R1": {
+      "completion": 0.6,
+      "max_errors": 2,
+      "max_warnings": null,
+      "notes": "Moderate: some gaps acceptable"
+    },
+    "R2": {
+      "completion": 0.8,
+      "max_errors": 0,
+      "max_warnings": 5,
+      "notes": "Strict: must be substantially complete"
+    },
+    "R3": {
+      "completion": 0.9,
+      "max_errors": 0,
+      "max_warnings": 3,
+      "notes": "Maximum: near-complete before proceeding"
+    }
+  },
+  "tuning_metrics": {
+    "false_ready_rate": "TBD - track after initial deployment",
+    "false_not_ready_rate": "TBD - track after initial deployment",
+    "override_rate": "TBD - track user override frequency",
+    "rework_rate": "TBD - track artifacts needing rework after generation"
+  },
+  "calibration_policy": {
+    "description": "Thresholds are defaults stored in versioned file, changed via explicit PR with documented rationale",
+    "when_to_tune": [
+      "False 'ready': Users generate artifacts that turn out incomplete (measured by expert review rejections)",
+      "False 'not ready': Users override dependencies frequently and succeed (measured by override rate vs rework rate)",
+      "User feedback: Explicit reports of 'too lenient' or 'too strict'"
+    ],
+    "how_to_tune": [
+      "Collect metrics (override rate, rework rate, review rejection rate)",
+      "Propose threshold change in PR with rationale + data",
+      "Update readiness_thresholds.json with new version number",
+      "Document change in version_history section"
+    ]
+  },
+  "version_history": []
+}

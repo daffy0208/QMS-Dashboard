@@ -7,7 +7,15 @@
 
 ---
 
+<!-- VALIDATION: Measurement Plan requirements
+     R0: Key Metrics section (1 metric minimum, warning only)
+     R1: Key Metrics + Measurement Approach (2 metrics)
+     R2: Key Metrics + Measurement Approach + Targets (3 metrics)
+     R3: Key Metrics + Measurement Approach + Targets + Monitoring Frequency (5 metrics)
+-->
+
 ## Key Metrics
+<!-- REQUIRED[R0,R1,R2,R3]: Metrics for monitoring system quality and performance -->
 
 ### M-001: Defect Density
 **Target:** <X defects per KLOC

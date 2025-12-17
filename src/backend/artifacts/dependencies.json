@@ -1,0 +1,46 @@
+{
+  "meta": {
+    "version": "1.0",
+    "workstream": "WS-2",
+    "last_updated": "2025-12-17",
+    "description": "Static dependency graph defining which artifacts depend on which prerequisites"
+  },
+  "dependencies": {
+    "Quality Plan": [],
+    "CTQ Tree": [],
+    "Assumptions Register": [],
+    "Risk Register": [
+      "CTQ Tree"
+    ],
+    "Verification Plan": [
+      "Risk Register",
+      "CTQ Tree"
+    ],
+    "Validation Plan": [
+      "CTQ Tree"
+    ],
+    "Measurement Plan": [
+      "CTQ Tree"
+    ],
+    "Control Plan": [
+      "Risk Register",
+      "Verification Plan"
+    ],
+    "Traceability Index": [
+      "CTQ Tree",
+      "Risk Register",
+      "Verification Plan"
+    ],
+    "Change Log": [],
+    "CAPA Log": [
+      "Risk Register"
+    ]
+  },
+  "rationale": {
+    "Risk Register": "Depends on CTQ Tree to ensure risks are tied to critical quality characteristics",
+    "Verification Plan": "Depends on Risk Register (test cases verify risk mitigations) and CTQ Tree (test cases verify CTQs)",
+    "Control Plan": "Depends on Risk Register (controls mitigate risks) and Verification Plan (controls include monitoring from verification)",
+    "Traceability Index": "Depends on CTQ Tree (traces requirements), Risk Register (traces risks), and Verification Plan (traces tests)",
+    "CAPA Log": "Depends on Risk Register to reference risks in corrective actions"
+  }
+}

@@ -7,7 +7,15 @@
 
 ---
 
+<!-- VALIDATION: Traceability Index requirements
+     R0: Minimum 100 characters of content (warning only)
+     R1: Traceability Matrix section (3 entries minimum)
+     R2: Traceability Matrix + Coverage Analysis (5 entries)
+     R3: Traceability Matrix + Coverage Analysis + Gap Analysis (10 entries)
+-->
+
 ## Traceability Matrix
+<!-- REQUIRED[R1,R2,R3]: Traceability matrix linking requirements to verification -->
 
 | Requirement | Design | Implementation | Test | Status |
 |-------------|--------|----------------|------|--------|
