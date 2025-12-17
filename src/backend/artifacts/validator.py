@@ -180,10 +180,40 @@ class ArtifactValidator:
                     suggestion="Add more detailed sections to meet minimum requirements"
                 ))
 
-        # 4. Artifact-specific validation
+        # 4. Artifact-specific validation (WS-1.9.1)
         if artifact_name == "Risk Register":
             risk_issues = self._validate_risk_register(content, risk_criteria, warning_only)
             issues.extend(risk_issues)
+
+        # WS-1.9.1: New artifact-specific validations
+        # Check for rules that apply to this artifact
+        if "min_content_length" in rules:
+            min_length_issues = self._validate_min_content_length(content, rules, warning_only)
+            issues.extend(min_length_issues)
+
+        if "min_items" in rules:
+            min_items_issues = self._validate_min_items(content, risk_criteria, warning_only)
+            issues.extend(min_items_issues)
+
+        if "min_metrics" in rules:
+            min_metrics_issues = self._validate_min_metrics(content, rules, warning_only)
+            issues.extend(min_metrics_issues)
+
+        if "min_assumptions" in rules:
+            min_assumptions_issues = self._validate_min_assumptions(content, rules, warning_only)
+            issues.extend(min_assumptions_issues)
+
+        if "min_entries" in rules:
+            min_entries_issues = self._validate_min_entries(content, rules, warning_only)
+            issues.extend(min_entries_issues)
+
+        if "has_header" in rules:
+            header_issues = self._validate_has_header(content, warning_only)
+            issues.extend(header_issues)
+
+        if "has_structure" in rules:
+            structure_issues = self._validate_has_structure(content, warning_only)
+            issues.extend(structure_issues)
 
         # Calculate completion percentage
         completion_percent = self._calculate_completion(
@@ -301,6 +331,199 @@ class ArtifactValidator:
                     message=f"Some risks may be missing fields: {', '.join(missing_fields)}",
                     suggestion="Ensure all risks include: " + ", ".join(required_fields)
                 ))
+
+        return issues
+
+    def _validate_min_content_length(
+        self,
+        content: str,
+        rules: Dict,
+        warning_only: bool = False
+    ) -> List[ValidationIssue]:
+        """WS-1.9.1: Validate minimum content length (lightweight check)."""
+        issues = []
+        min_length = rules.get("min_content_length", 0)
+
+        # Strip markdown headers and count actual content
+        content_clean = re.sub(r'^#+ .*$', '', content, flags=re.MULTILINE)
+        content_clean = content_clean.strip()
+        actual_length = len(content_clean)
+
+        if actual_length < min_length:
+            severity = "warning" if warning_only else "error"
+            issues.append(ValidationIssue(
+                severity=severity,
+                section=None,
+                message=f"Content too short: {actual_length} characters (minimum {min_length})",
+                suggestion="Add more detailed content to meet minimum length requirement"
+            ))
+
+        return issues
+
+    def _validate_min_items(
+        self,
+        content: str,
+        risk_criteria: Dict,
+        warning_only: bool = False
+    ) -> List[ValidationIssue]:
+        """WS-1.9.1: Validate minimum items in sections (for CTQ Tree)."""
+        issues = []
+        rules = risk_criteria.get("rules", {})
+        min_items = rules.get("min_items", 0)
+
+        # Count list items (- or *) and numbered items
+        list_items = len(re.findall(r'^[\s]*[-*]\s+\w', content, re.MULTILINE))
+        numbered_items = len(re.findall(r'^[\s]*\d+\.\s+\w', content, re.MULTILINE))
+        total_items = list_items + numbered_items
+
+        if total_items < min_items:
+            severity = "warning" if warning_only else "error"
+            issues.append(ValidationIssue(
+                severity=severity,
+                section=None,
+                message=f"Expected at least {min_items} items, found {total_items}",
+                suggestion=f"Add {min_items - total_items} more item(s) to meet requirements"
+            ))
+
+        return issues
+
+    def _validate_min_metrics(
+        self,
+        content: str,
+        rules: Dict,
+        warning_only: bool = False
+    ) -> List[ValidationIssue]:
+        """WS-1.9.1: Validate minimum metrics (for Measurement Plan)."""
+        issues = []
+        min_metrics = rules.get("min_metrics", 0)
+
+        # Count metric definitions (look for patterns like "Metric:", "**Metric**:", etc.)
+        metric_patterns = [
+            r'\*\*.*?Metric.*?\*\*:',  # **Some Metric**:
+            r'Metric \d+:',  # Metric 1:
+            r'^\s*-\s+.*?:.*?(target|baseline|threshold)',  # List items with targets
+        ]
+
+        metrics_found = sum(
+            len(re.findall(pattern, content, re.IGNORECASE | re.MULTILINE))
+            for pattern in metric_patterns
+        )
+
+        if metrics_found < min_metrics:
+            severity = "warning" if warning_only else "error"
+            issues.append(ValidationIssue(
+                severity=severity,
+                section="Key Metrics",
+                message=f"Expected at least {min_metrics} metrics, found {metrics_found}",
+                suggestion=f"Add {min_metrics - metrics_found} more metric(s) with targets/baselines"
+            ))
+
+        return issues
+
+    def _validate_min_assumptions(
+        self,
+        content: str,
+        rules: Dict,
+        warning_only: bool = False
+    ) -> List[ValidationIssue]:
+        """WS-1.9.1: Validate minimum assumptions (for Assumptions Register)."""
+        issues = []
+        min_assumptions = rules.get("min_assumptions", 0)
+
+        # Count assumption entries (look for numbered or bulleted assumptions)
+        assumption_pattern = r'(?:^|\n)(?:[\s]*(?:[-*]|\d+\.)\s+)(?:Assumption|ASS-\d+|A-\d+)'
+        assumptions_found = len(re.findall(assumption_pattern, content, re.IGNORECASE | re.MULTILINE))
+
+        # Also count table rows under assumptions section
+        if assumptions_found == 0:
+            # Alternative: count list items in critical assumptions section
+            assumptions_found = len(re.findall(r'^[\s]*[-*]\s+\w', content, re.MULTILINE))
+
+        if assumptions_found < min_assumptions:
+            severity = "warning" if warning_only else "error"
+            issues.append(ValidationIssue(
+                severity=severity,
+                section="Critical Assumptions",
+                message=f"Expected at least {min_assumptions} assumptions, found {assumptions_found}",
+                suggestion=f"Add {min_assumptions - assumptions_found} more assumption(s)"
+            ))
+
+        return issues
+
+    def _validate_min_entries(
+        self,
+        content: str,
+        rules: Dict,
+        warning_only: bool = False
+    ) -> List[ValidationIssue]:
+        """WS-1.9.1: Validate minimum entries (for Traceability Index, logs)."""
+        issues = []
+        min_entries = rules.get("min_entries", 0)
+
+        # Count table rows (look for | separators) or list items
+        table_rows = len(re.findall(r'^\|.*?\|.*?\|', content, re.MULTILINE))
+        list_items = len(re.findall(r'^[\s]*[-*]\s+\w', content, re.MULTILINE))
+        entries_found = max(table_rows - 1, list_items)  # -1 for header row
+
+        if entries_found < min_entries:
+            severity = "warning" if warning_only else "error"
+            issues.append(ValidationIssue(
+                severity=severity,
+                section=None,
+                message=f"Expected at least {min_entries} entries, found {entries_found}",
+                suggestion=f"Add {min_entries - entries_found} more entry(ies)"
+            ))
+
+        return issues
+
+    def _validate_has_header(
+        self,
+        content: str,
+        warning_only: bool = False
+    ) -> List[ValidationIssue]:
+        """WS-1.9.1: Validate artifact has proper header structure."""
+        issues = []
+
+        # Check for title (# header) at top
+        has_title = bool(re.match(r'^#\s+\w', content, re.MULTILINE))
+
+        # Check for project name subtitle (## header)
+        has_project = bool(re.search(r'^##\s+\w', content, re.MULTILINE))
+
+        if not (has_title and has_project):
+            severity = "warning" if warning_only else "error"
+            issues.append(ValidationIssue(
+                severity=severity,
+                section=None,
+                message="Missing proper header structure (title + project name)",
+                suggestion="Add '# Title' and '## Project Name' headers at top"
+            ))
+
+        return issues
+
+    def _validate_has_structure(
+        self,
+        content: str,
+        warning_only: bool = False
+    ) -> List[ValidationIssue]:
+        """WS-1.9.1: Validate artifact has proper structure (sections/table/list)."""
+        issues = []
+
+        # Check for at least one section header (## or ###)
+        has_sections = bool(re.search(r'^##+ ', content, re.MULTILINE))
+
+        # Check for table or list structure
+        has_table = bool(re.search(r'^\|.*?\|', content, re.MULTILINE))
+        has_list = bool(re.search(r'^[\s]*[-*]\s+\w', content, re.MULTILINE))
+
+        if not (has_sections and (has_table or has_list)):
+            severity = "warning" if warning_only else "error"
+            issues.append(ValidationIssue(
+                severity=severity,
+                section=None,
+                message="Missing proper structure (sections + table/list)",
+                suggestion="Add section headers and organize content in table or list format"
+            ))
 
         return issues
 
