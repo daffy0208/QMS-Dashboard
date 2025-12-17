@@ -543,7 +543,80 @@ User clicks button. System does NOT auto-submit.
 
 ---
 
-## Summary: The 12 Non-Goals
+## Non-Goal 13: UI Disablement Based on WS-2 Readiness (Dark-Matter Patch #4)
+
+### Temptation
+
+"Risk Register not ready → disable 'Generate Verification Plan' button in UI."
+
+### Why Rejected
+
+**Functional gating via UI.** Even with `can_proceed_anyway: true` in API, disabling UI buttons transforms soft blocking into hard blocking.
+
+### What Happens Instead
+
+**UI Must Always Enable Actions, Show Warnings:**
+
+```tsx
+// ✅ CORRECT: Button enabled, warning shown
+<button onClick={generateVerificationPlan} disabled={false}>
+  Generate Verification Plan
+</button>
+{!readiness.ready && (
+  <Warning>
+    Risk Register only 40% complete (need 80%+ for R2).
+    Generating now may result in incomplete artifact.
+  </Warning>
+)}
+```
+
+**UI Must NOT Disable Based on WS-2:**
+
+```tsx
+// ❌ INCORRECT: Button disabled (functional gating)
+<button
+  onClick={generateVerificationPlan}
+  disabled={!readiness.ready}  // VIOLATION
+>
+  Generate Verification Plan
+</button>
+```
+
+### Allowed UI Patterns
+
+| Pattern | Allowed? | Rationale |
+|---------|----------|-----------|
+| Show warning badge | ✅ Yes | Informational |
+| Reorder recommended actions | ✅ Yes | Guidance priority |
+| Hide "Generate" in collapsed menu | ❌ No | Functional hiding |
+| Disable button | ❌ No | Hard blocking |
+| Require confirmation click | ✅ Yes | "Are you sure? Risk Register incomplete" |
+
+### Exception: WS-6 Stage Gates
+
+**UI MAY disable for stage transitions** (WS-6 concern):
+- Prototype → Development: Requires Quality Plan approved
+- Development → Production: Requires all artifacts complete + expert review
+
+**WS-2 readiness does NOT enable UI disablement. Only WS-6 stage gates do.**
+
+### Rationale
+
+- Soft blocking in API must remain soft in UI
+- Disablement creates learned helplessness
+- Teaching principle requires user agency
+
+### Code Review Checklist
+
+When reviewing frontend code:
+- ❌ Does button `disabled` prop depend on `readiness.ready`?
+- ❌ Does menu hide actions based on `readiness.ready`?
+- ✅ Are warnings shown without disabling actions?
+- ✅ Is override path always available?
+
+---
+
+## Summary: The 13 Non-Goals (Updated)
 
 1. **No Auto-Generation** - User decides when to generate
 2. **No Auto-Completion** - User fills gaps, not system
@@ -557,8 +630,9 @@ User clicks button. System does NOT auto-submit.
 10. **No Semantic Override** - Respect WS-1 thresholds
 11. **No Guidance Generation** - WS-3 concern, not WS-2
 12. **No Auto-Review** - User initiates, not system
+13. **No UI Disablement** - Buttons stay enabled, warnings shown (except WS-6 stage gates)
 
 ---
 
-**Status:** Awaiting Dark-Matter review.
-**Next Step:** Run Dark-Matter Mode on WS-2-SCOPE.md, WS-2-DEPENDENCY-PRINCIPLES.md, and WS-2-NON-GOALS.md before any WS-2 code is written.
+**Status:** Dark-Matter patches applied (Patch #4).
+**Next Step:** Create WS-2 AI containment snippet, commit all patches, freeze output contract.

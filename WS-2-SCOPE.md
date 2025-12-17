@@ -66,6 +66,34 @@
 
 **Output:** Status summary per artifact (JSON API response)
 
+**Required Fields (Dark-Matter Patch #6):**
+```json
+{
+  "artifact": "Risk Register",
+  "ready": false,
+  "completion": 0.4,
+  "epistemic_status": "structural_only",
+  "confidence_limits": [
+    "Readiness based on structure, not semantic quality",
+    "Completion ≠ correctness",
+    "Expert review required for safety-critical systems"
+  ],
+  "can_proceed_anyway": true,
+  "override_budget": {
+    "count": 3,
+    "status": "high",
+    "warning": "Override count: 3 (high). Expect rework risk."
+  },
+  "placeholder_density": 0.15,
+  "readiness_basis": "structural"
+}
+```
+
+**Key Additions:**
+- `epistemic_status`: Always "structural_only" (prevents misinterpretation as "safe" or "approved")
+- `confidence_limits`: Fixed strings explaining what readiness does NOT mean
+- `override_budget`: Tracks repeated overrides (informational, not blocking)
+
 **Not Included:** Visual UI rendering (frontend concern, out of WS-2 scope)
 
 ---
