@@ -1,0 +1,11 @@
+# QMS Dashboard - Development & Test Dependencies
+#
+# This repository is a frozen proof harness. Runtime dependencies live in
+# requirements.txt. This file contains only dev/test tooling needed to run
+# the included test scripts and CI checks.
+#
+# Pin exact versions for reproducible demonstration runs.
+
+pytest==9.0.2
+requests==2.32.5
+

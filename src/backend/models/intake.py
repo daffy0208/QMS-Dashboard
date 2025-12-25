@@ -5,8 +5,13 @@ Implements IntakeResponse structure from intake-validation-spec.md.
 
 from typing import Optional, Literal
 from pydantic import BaseModel, Field, validator
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
+
+
+def utcnow() -> datetime:
+    """Timezone-aware UTC 'now' for timestamps."""
+    return datetime.now(timezone.utc)
 
 
 class IntakeAnswers(BaseModel):
@@ -55,7 +60,7 @@ class IntakeRequest(BaseModel):
         description="Name of the project undergoing quality intake"
     )
     timestamp: datetime = Field(
-        default_factory=datetime.utcnow,
+        default_factory=utcnow,
         description="Timestamp of intake submission (ISO 8601)"
     )
     answers: IntakeAnswers = Field(

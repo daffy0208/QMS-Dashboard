@@ -7,7 +7,7 @@ Phase 7 WS-1: Runtime & Environment Hardening
 import sys
 import os
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 
 # Add parent directory to path for imports
@@ -285,6 +285,25 @@ async def validate_request_middleware(request, call_next):
                 }
             )
 
+        # Validate JSON depth for application/json bodies (prevent deeply nested JSON attacks).
+        # Note: request.body() is cached by Starlette, so downstream handlers can still read it.
+        if content_type == "application/json":
+            try:
+                body_bytes = await request.body()
+                if body_bytes:
+                    payload = json.loads(body_bytes.decode("utf-8"))
+                    if not validate_json_depth(payload):
+                        return JSONResponse(
+                            status_code=400,
+                            content={
+                                "error": "Invalid JSON structure",
+                                "detail": "JSON payload is too deeply nested"
+                            }
+                        )
+            except Exception:
+                # Let FastAPI's request parsing handle invalid JSON; this check is depth-only.
+                pass
+
     # Process request
     response = await call_next(request)
     return response
@@ -313,7 +332,7 @@ async def health_check():
     return {
         "status": "healthy",
         "version": "1.0.0",
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
 

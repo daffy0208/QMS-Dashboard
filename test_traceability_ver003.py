@@ -12,7 +12,7 @@ Verifies:
 import sys
 import shutil
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 
 # Add backend to path
@@ -35,7 +35,7 @@ def test_ver003a_traceability_matrix_completeness():
     # Create intake for R2 (11 artifacts)
     intake_request = IntakeRequest(
         project_name="Traceability Test Project",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         answers=IntakeAnswers(
             q1_users="Internal",
             q2_influence="Recommendations",
@@ -111,7 +111,7 @@ def test_ver003b_traceability_links_validation():
     # Create R1 intake (8 artifacts)
     intake_request = IntakeRequest(
         project_name="Links Validation Project",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         answers=IntakeAnswers(
             q1_users="Internal",
             q2_influence="Recommendations",
@@ -238,7 +238,7 @@ def test_ver003c_orphan_detection():
     for expected_risk, project_name, answers, expected_artifacts in test_cases:
         intake_request = IntakeRequest(
             project_name=project_name,
-            timestamp=datetime.utcnow(),
+            timestamp=datetime.now(timezone.utc),
             answers=answers
         )
 

@@ -108,15 +108,18 @@ Your terminal prompt should now show `(venv)` or `(.venv)`.
 **Using pip:**
 ```bash
 pip install -r requirements.txt
+pip install -r requirements-dev.txt
 ```
 
 **Using uv:**
 ```bash
 uv pip install -r requirements.txt
+uv pip install -r requirements-dev.txt
 ```
 
 **Expected output:**
-- Installing fastapi, pydantic, uvicorn, pytest, requests, and dependencies
+- Installing fastapi, pydantic, uvicorn, and dependencies (runtime)
+- Installing pytest, requests (dev/test)
 - No errors or unresolved dependencies
 
 **Common issues:**

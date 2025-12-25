@@ -7,7 +7,12 @@ Implements O1-O2 from intake-safety-mechanisms.md.
 
 from typing import Literal
 from pydantic import BaseModel, Field
-from datetime import datetime
+from datetime import datetime, timezone
+
+
+def utcnow() -> datetime:
+    """Timezone-aware UTC 'now' for timestamps."""
+    return datetime.now(timezone.utc)
 
 
 class OverrideRequest(BaseModel):
@@ -37,7 +42,7 @@ class OverrideRequest(BaseModel):
     approved_by: str | None = Field(
         None, description="Approver name (required for downgrades)"
     )
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=utcnow)
 
 
 class OverrideValidationResult(BaseModel):

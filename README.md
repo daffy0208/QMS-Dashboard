@@ -143,8 +143,7 @@ The following are **not permitted**:
 Authoritative documents:
 
 * **WS-2 Scope Freeze:** `WS-2-SCOPE-FREEZE.md`
-* **Meta-QMS Canon v1.0:** `META-QMS-CANON-V1.md`
-* **Phase 8A Completion Reports:** `PHASE-8A-WS1-COMPLETION.md`, `PHASE-8A-WS2-COMPLETION.md`
+* **Phase 8A WS-1 Completion Report:** `PHASE-8A-WS1-COMPLETION.md`
 
 These documents define all binding constraints on this repository.
 
@@ -232,7 +231,7 @@ These principles were **extracted from** Dashboard behavior, not imposed on it a
 The Dashboard consists of four frozen components:
 
 #### Risk Classification Engine
-- **Location:** `src/backend/risk_classifier.py`
+- **Location:** `src/backend/validation/classifier.py`
 - **Function:** Maps intake question responses to risk levels (R0-R3) using fixed decision logic
 - **Status:** Frozen (Phase 8A WS-1)
 
@@ -385,6 +384,8 @@ The Dashboard exposes the following REST endpoints:
 - **Validation Engine:** Custom Pydantic models
 - **Storage:** File-based (JSON for intake data, Markdown for artifacts)
 - **Testing:** pytest (unit tests), requests (API tests)
+  - Runtime deps: `requirements.txt`
+  - Dev/test deps: `requirements-dev.txt`
 
 No databases, no external services, no authentication layer.
 
@@ -412,9 +413,10 @@ cd qms-dashboard
 
 # Install dependencies
 pip install -r requirements.txt
+pip install -r requirements-dev.txt
 
 # Verify installation
-python -m pytest test_ws2_dependency_manager.py
+python test_ws2_dependency_manager.py
 ```
 
 ### 6.3 Running Demo Scenarios
@@ -465,9 +467,7 @@ When running demos, observe:
 
 ### 7.3 For Quality Engineers (Principles & Evidence)
 
-- **META-QMS-CANON-V1.md** — Universal quality principles extracted from implementation
 - **PHASE-8A-WS1-COMPLETION.md** — WS-1 completion report
-- **PHASE-8A-WS2-COMPLETION.md** — WS-2 completion report
 - **WS-2-DEPENDENCY-PRINCIPLES.md** — Dependency logic principles
 
 ---

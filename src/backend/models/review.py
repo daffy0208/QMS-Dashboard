@@ -3,12 +3,17 @@ Expert Review Data Models.
 Implements Phase 5: Expert Review Workflow.
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional, Literal
 from uuid import uuid4
 from pydantic import BaseModel, Field
 
 from models.intake import IntakeRequest, IntakeResponse, IntakeAnswers, ValidationWarning
+
+
+def utcnow() -> datetime:
+    """Timezone-aware UTC 'now' for timestamps."""
+    return datetime.now(timezone.utc)
 
 
 class ReviewTrigger(BaseModel):
@@ -24,7 +29,7 @@ class ReviewRequest(BaseModel):
     intake_id: str = Field(..., description="Associated intake ID")
     project_name: str = Field(..., description="Project name")
     requested_by: str = Field(default="System", description="Who requested the review")
-    request_date: datetime = Field(default_factory=datetime.utcnow)
+    request_date: datetime = Field(default_factory=utcnow)
     review_type: Literal["mandatory", "recommended"] = Field(..., description="Review type")
 
     # Full intake context
@@ -56,7 +61,7 @@ class ReviewApproval(BaseModel):
     review_id: str = Field(..., description="Review request ID")
     reviewer_name: str = Field(..., description="Expert reviewer name")
     reviewer_qualifications: str = Field(..., description="Expert's role/expertise")
-    decision_date: datetime = Field(default_factory=datetime.utcnow)
+    decision_date: datetime = Field(default_factory=utcnow)
 
     expert_comments: Optional[str] = Field(None, description="Optional expert comments or notes")
     classification_approved: str = Field(..., description="Approved risk level (same as calculated)")
@@ -67,7 +72,7 @@ class ReviewOverride(BaseModel):
     review_id: str = Field(..., description="Review request ID")
     reviewer_name: str = Field(..., description="Expert reviewer name")
     reviewer_qualifications: str = Field(..., description="Expert's role/expertise")
-    decision_date: datetime = Field(default_factory=datetime.utcnow)
+    decision_date: datetime = Field(default_factory=utcnow)
 
     original_classification: str = Field(..., description="Calculated risk level")
     new_classification: str = Field(..., description="Expert-determined risk level")
@@ -91,7 +96,7 @@ class ReviewInfoRequest(BaseModel):
     """Expert request for more information from user."""
     review_id: str = Field(..., description="Review request ID")
     reviewer_name: str = Field(..., description="Expert reviewer name")
-    request_date: datetime = Field(default_factory=datetime.utcnow)
+    request_date: datetime = Field(default_factory=utcnow)
 
     questions: str = Field(..., min_length=50, description="Questions for the user")
 
@@ -108,7 +113,7 @@ class ReviewResponse(BaseModel):
 
     reviewer_name: str = Field(..., description="Expert reviewer name")
     reviewer_qualifications: str = Field(..., description="Expert's role/expertise")
-    decision_date: datetime = Field(default_factory=datetime.utcnow)
+    decision_date: datetime = Field(default_factory=utcnow)
 
     review_type: Literal["mandatory", "recommended"] = Field(..., description="Review type")
     decision: Literal["approved", "overridden", "info_requested"] = Field(..., description="Expert decision")
@@ -130,7 +135,7 @@ class ReviewResponse(BaseModel):
 class ReviewLog(BaseModel):
     """Single entry in expert review log."""
     review_id: str = Field(..., description="Review request ID")
-    date: datetime = Field(default_factory=datetime.utcnow)
+    date: datetime = Field(default_factory=utcnow)
     project_name: str = Field(..., description="Project name")
     intake_id: str = Field(..., description="Associated intake ID")
 

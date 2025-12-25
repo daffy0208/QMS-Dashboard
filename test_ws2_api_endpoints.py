@@ -173,7 +173,7 @@ def test_next_actions_endpoint():
         "answers": {
             "q1_users": "External",
             "q2_influence": "Recommendations",
-            "q3_worst_failure": "Minor",
+            "q3_worst_failure": "Annoyance",
             "q4_reversibility": "Easy",
             "q5_domain": "No",
             "q6_scale": "Individual",
@@ -291,11 +291,11 @@ def test_ws2_non_goals_compliance():
         "project_name": "WS2-NonGoals-Test",
         "answers": {
             "q1_users": "External",
-            "q2_influence": "Decisions",
-            "q3_worst_failure": "Safety",
+            "q2_influence": "Automated",
+            "q3_worst_failure": "Safety_Legal_Compliance",
             "q4_reversibility": "Hard",
             "q5_domain": "Yes",
-            "q6_scale": "Organization",
+            "q6_scale": "Organization_Public",
             "q7_regulated": "Yes"
         }
     }

@@ -17,7 +17,7 @@ Tests VER-001 through VER-008 covering:
 import sys
 import shutil
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 
 # Add backend to path
 sys.path.insert(0, str(Path(__file__).parent / "src" / "backend"))
@@ -346,7 +346,7 @@ def test_ver002b_integration_full_flow():
     # Create sample R2 intake
     intake_request = IntakeRequest(
         project_name="VER-002-B Test Project",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         answers=IntakeAnswers(
             q1_users="Internal",
             q2_influence="Recommendations",
@@ -434,7 +434,7 @@ def test_ver004a_system_test_all_files_created():
     # Test R2 (11 artifacts)
     intake_request = IntakeRequest(
         project_name="VER-004-A Test",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         answers=IntakeAnswers(
             q1_users="External",
             q2_influence="Recommendations",

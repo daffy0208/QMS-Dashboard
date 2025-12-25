@@ -13,7 +13,7 @@ Purpose:
 import sys
 import shutil
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 
 # Add backend to path
@@ -217,7 +217,7 @@ def test_regression_phase4_artifact_generation():
         # Generate and verify
         intake_request = IntakeRequest(
             project_name=f"Regression Test {risk_level}",
-            timestamp=datetime.utcnow(),
+            timestamp=datetime.now(timezone.utc),
             answers=answers
         )
 
@@ -259,7 +259,7 @@ def test_regression_phase5_v1_scope_enforcement():
     # Create test review
     intake_request = IntakeRequest(
         project_name="Phase 5 Regression Test",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         answers=IntakeAnswers(
             q1_users="Internal", q2_influence="Recommendations",
             q3_worst_failure="Financial", q4_reversibility="Easy",
@@ -343,7 +343,7 @@ def test_regression_intake_immutability_after_review():
     # Create and save intake
     intake_request = IntakeRequest(
         project_name="Immutability Regression Test",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         answers=IntakeAnswers(
             q1_users="Internal", q2_influence="Recommendations",
             q3_worst_failure="Financial", q4_reversibility="Easy",

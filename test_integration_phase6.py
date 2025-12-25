@@ -13,7 +13,7 @@ Covers:
 import sys
 import shutil
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 
 # Add backend to path
 sys.path.insert(0, str(Path(__file__).parent / "src" / "backend"))
@@ -43,7 +43,7 @@ def test_integration_e2e_r0_happy_path():
     # Step 1: Create intake request
     intake_request = IntakeRequest(
         project_name="Internal Dashboard Widget",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         answers=IntakeAnswers(
             q1_users="Internal",
             q2_influence="Informational",
@@ -135,7 +135,7 @@ def test_integration_e2e_r3_expert_review():
     # Step 1: Create R3 intake (safety-critical)
     intake_request = IntakeRequest(
         project_name="Medical Device Control System",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         answers=IntakeAnswers(
             q1_users="External",
             q2_influence="Automated",
@@ -245,7 +245,7 @@ def test_integration_validation_layers():
     # Create intake with multiple validation triggers
     intake_request = IntakeRequest(
         project_name="Financial Trading System",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         answers=IntakeAnswers(
             q1_users="External",
             q2_influence="Automated",
@@ -310,7 +310,7 @@ def test_integration_r1_moderate_risk():
 
     intake_request = IntakeRequest(
         project_name="Customer Feedback Analysis Tool",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         answers=IntakeAnswers(
             q1_users="Internal",
             q2_influence="Recommendations",
@@ -375,7 +375,7 @@ def test_integration_r2_strict_compliance():
 
     intake_request = IntakeRequest(
         project_name="Automated Financial Reporting System",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         answers=IntakeAnswers(
             q1_users="Internal",
             q2_influence="Recommendations",
@@ -442,7 +442,7 @@ def test_integration_expert_override_workflow():
     # Create borderline R1/R2 case
     intake_request = IntakeRequest(
         project_name="Payment Processing Integration",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         answers=IntakeAnswers(
             q1_users="Internal",
             q2_influence="Recommendations",

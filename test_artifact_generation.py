@@ -7,7 +7,7 @@ Tests artifact generation for different risk levels.
 import sys
 import shutil
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 
 # Add backend to path
 sys.path.insert(0, str(Path(__file__).parent / "src" / "backend"))
@@ -25,7 +25,7 @@ def test_r2_artifact_generation():
     # Create sample intake (QMS Dashboard itself)
     intake_request = IntakeRequest(
         project_name="QMS Dashboard Test",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         answers=IntakeAnswers(
             q1_users="Internal",
             q2_influence="Recommendations",
@@ -40,7 +40,7 @@ def test_r2_artifact_generation():
     intake_response = IntakeResponse(
         intake_id="test-123",
         project_name="QMS Dashboard Test",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         answers=intake_request.answers,
         classification=RiskClassification(
             risk_level="R2",
@@ -123,7 +123,7 @@ def test_r0_artifact_generation():
 
     intake_request = IntakeRequest(
         project_name="Simple Internal Tool",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         answers=IntakeAnswers(
             q1_users="Internal",
             q2_influence="Informational",
@@ -138,7 +138,7 @@ def test_r0_artifact_generation():
     intake_response = IntakeResponse(
         intake_id="test-r0",
         project_name="Simple Internal Tool",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         answers=intake_request.answers,
         classification=RiskClassification(
             risk_level="R0",

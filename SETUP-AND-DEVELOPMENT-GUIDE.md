@@ -44,7 +44,7 @@ If you find yourself auto-completing artifacts, **you've broken the teaching pri
 
 - **Python:** 3.10+ (tested on 3.10.12)
 - **OS:** Linux, macOS, Windows (WSL recommended on Windows)
-- **Dependencies:** See `requirements.txt` (FastAPI, Pydantic, etc.)
+- **Dependencies:** Runtime deps in `requirements.txt`, dev/test deps in `requirements-dev.txt`
 
 ### Setup (First Time)
 
@@ -60,6 +60,7 @@ source venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
+pip install -r requirements-dev.txt
 
 # Verify installation
 python3 -m pytest test_regression_phase6.py

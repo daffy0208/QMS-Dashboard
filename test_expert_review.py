@@ -7,7 +7,7 @@ Tests expert review request generation, approvals, overrides, and metrics.
 import sys
 import shutil
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 
 # Add backend to path
 sys.path.insert(0, str(Path(__file__).parent / "src" / "backend"))
@@ -41,7 +41,7 @@ def test_create_review_request():
     # Create sample intake
     intake_request = IntakeRequest(
         project_name="High-Risk Medical System",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         answers=IntakeAnswers(
             q1_users="External",
             q2_influence="Automated",
@@ -56,7 +56,7 @@ def test_create_review_request():
     intake_response = IntakeResponse(
         intake_id="test-intake-123",
         project_name="High-Risk Medical System",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         answers=intake_request.answers,
         classification=RiskClassification(
             risk_level="R3",
@@ -124,7 +124,7 @@ def test_format_review_request():
     # Create sample intake
     intake_request = IntakeRequest(
         project_name="Test System",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         answers=IntakeAnswers(
             q1_users="Internal",
             q2_influence="Recommendations",
@@ -139,7 +139,7 @@ def test_format_review_request():
     intake_response = IntakeResponse(
         intake_id="test-123",
         project_name="Test System",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         answers=intake_request.answers,
         classification=RiskClassification(
             risk_level="R2",
@@ -215,7 +215,7 @@ def test_review_storage():
     # Create sample review request
     intake_request = IntakeRequest(
         project_name="Storage Test Project",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         answers=IntakeAnswers(
             q1_users="Internal",
             q2_influence="Informational",
@@ -230,7 +230,7 @@ def test_review_storage():
     intake_response = IntakeResponse(
         intake_id="storage-test",
         project_name="Storage Test Project",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         answers=intake_request.answers,
         classification=RiskClassification(
             risk_level="R0",
@@ -344,7 +344,7 @@ def test_expert_override():
     # Create intake that might be misclassified
     intake_request = IntakeRequest(
         project_name="Borderline System",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         answers=IntakeAnswers(
             q1_users="Internal",
             q2_influence="Recommendations",
@@ -359,7 +359,7 @@ def test_expert_override():
     intake_response = IntakeResponse(
         intake_id="override-test",
         project_name="Borderline System",
-        timestamp=datetime.utcnow(),
+        timestamp=datetime.now(timezone.utc),
         answers=intake_request.answers,
         classification=RiskClassification(
             risk_level="R1",

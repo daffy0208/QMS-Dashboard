@@ -65,15 +65,16 @@ class ArtifactValidator:
         # Placeholder patterns to detect
         self.placeholder_patterns = [
             r'\[Name\]',
+            r'\[Names\]',
             r'\[Description\]',
-            r'\[.*?\]',  # Any [bracketed text]
+            # Generic bracket placeholders, but exclude markdown links like: [text](url)
+            r'\[[^\]]+\](?!\()',
             r'TBD',
             r'To be determined',
             r'TODO',
             r'FIXME',
             r'XXX',
             r'<placeholder>',
-            r'\{.*?\}',  # Any {braced text} that looks like a placeholder
         ]
 
         self.placeholder_regex = re.compile(
@@ -609,12 +610,22 @@ def validate_project_artifacts(
     validator = ArtifactValidator()
     results = {}
 
-    # Map filename patterns to artifact names
+    # Map artifact filenames to artifact names.
+    #
+    # Note: acceptance_criteria.json defines criteria for all 11 artifacts.
+    # Keep this mapping aligned so project-level validation covers the full set.
     artifact_mapping = {
         "QMS-Quality-Plan.md": "Quality Plan",
+        "QMS-CTQ-Tree.md": "CTQ Tree",
+        "QMS-Assumptions-Register.md": "Assumptions Register",
         "QMS-Risk-Register.md": "Risk Register",
+        "QMS-Traceability-Index.md": "Traceability Index",
         "QMS-Verification-Plan.md": "Verification Plan",
+        "QMS-Validation-Plan.md": "Validation Plan",
+        "QMS-Measurement-Plan.md": "Measurement Plan",
         "QMS-Control-Plan.md": "Control Plan",
+        "QMS-Change-Log.md": "Change Log",
+        "QMS-CAPA-Log.md": "CAPA Log",
     }
 
     for filename, artifact_name in artifact_mapping.items():
